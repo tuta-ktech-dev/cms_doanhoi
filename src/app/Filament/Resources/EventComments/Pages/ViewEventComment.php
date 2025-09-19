@@ -41,6 +41,11 @@ class ViewEventComment extends ViewRecord
                         ->title('Phản hồi đã được thêm')
                         ->success()
                         ->send();
+                    
+                    // Refresh tất cả widgets để hiển thị phản hồi mới
+                    $this->dispatch('$refresh');
+                    $this->dispatch('refreshParentCommentWidget');
+                    $this->dispatch('refreshCommentRepliesWidget');
                 })
                 ->modalHeading('Trả lời bình luận')
                 ->modalDescription('Viết phản hồi cho bình luận này')

@@ -19,6 +19,8 @@ class CommentRepliesWidget extends BaseWidget
 
     public ?EventComment $parentComment = null;
 
+    protected $listeners = ['refreshCommentRepliesWidget' => '$refresh'];
+
     public function table(Table $table): Table
     {
         $parentComment = $this->getParentComment();
@@ -65,6 +67,14 @@ class CommentRepliesWidget extends BaseWidget
                         ->modalDescription('Bạn có chắc chắn muốn duyệt phản hồi này?')
                         ->action(function ($record) {
                             $record->update(['is_approved' => true]);
+                            
+                            \Filament\Notifications\Notification::make()
+                                ->title('Phản hồi đã được duyệt')
+                                ->success()
+                                ->send();
+                            
+                            // Refresh widget để hiển thị thay đổi
+                            $this->dispatch('$refresh');
                         }),
 
                     Action::make('disapprove')
@@ -77,6 +87,14 @@ class CommentRepliesWidget extends BaseWidget
                         ->modalDescription('Bạn có chắc chắn muốn hủy duyệt phản hồi này?')
                         ->action(function ($record) {
                             $record->update(['is_approved' => false]);
+                            
+                            \Filament\Notifications\Notification::make()
+                                ->title('Phản hồi đã bị hủy duyệt')
+                                ->warning()
+                                ->send();
+                            
+                            // Refresh widget để hiển thị thay đổi
+                            $this->dispatch('$refresh');
                         }),
                 ])
             ])

@@ -14,6 +14,8 @@ class ParentCommentWidget extends BaseWidget
 
     public ?EventComment $parentComment = null;
 
+    protected $listeners = ['refreshParentCommentWidget' => '$refresh'];
+
     protected function getStats(): array
     {
         $parentComment = $this->getParentComment();
