@@ -6,6 +6,7 @@ use App\Enums\PermissionEnum;
 use App\Filament\Resources\EventRegistrations\Pages\CreateEventRegistration;
 use App\Filament\Resources\EventRegistrations\Pages\EditEventRegistration;
 use App\Filament\Resources\EventRegistrations\Pages\ListEventRegistrations;
+use App\Filament\Resources\EventRegistrations\Pages\ViewEventRegistration;
 use App\Filament\Resources\EventRegistrations\Schemas\EventRegistrationForm;
 use App\Filament\Resources\EventRegistrations\Tables\EventRegistrationsTable;
 use App\Models\EventRegistration;
@@ -48,6 +49,7 @@ class EventRegistrationResource extends Resource
         return [
             'index' => ListEventRegistrations::route('/'),
             'create' => CreateEventRegistration::route('/create'),
+            'view' => ViewEventRegistration::route('/{record}'),
             'edit' => EditEventRegistration::route('/{record}/edit'),
         ];
     }
@@ -60,6 +62,25 @@ class EventRegistrationResource extends Resource
     public static function canCreate(): bool
     {
         return false; // Không cho phép tạo đăng ký từ admin panel
+    }
+
+    public static function canView($record): bool
+    {
+        $user = auth()->user();
+        if (!$user) return false;
+
+        // Admin có thể xem tất cả
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        // Union Manager chỉ có thể xem đăng ký của sự kiện mình tạo
+        if ($user->isUnionManager()) {
+            $userUnionIds = $user->unionManager->pluck('union_id')->toArray();
+            return in_array($record->event->union_id, $userUnionIds);
+        }
+
+        return false;
     }
 
     public static function canEdit($record): bool

@@ -27,6 +27,7 @@ enum PermissionEnum: string
     case APPROVE_REGISTRATIONS = 'approve_registrations';
     case REJECT_REGISTRATIONS = 'reject_registrations';
     
+    
     // Quyền quản lý vai trò và phân quyền
     case VIEW_ROLES = 'view_roles';
     case CREATE_ROLES = 'create_roles';
@@ -61,6 +62,7 @@ enum PermissionEnum: string
             self::VIEW_REGISTRATIONS => 'Xem danh sách đăng ký',
             self::APPROVE_REGISTRATIONS => 'Duyệt đăng ký',
             self::REJECT_REGISTRATIONS => 'Từ chối đăng ký',
+            
             
             // Quyền quản lý vai trò và phân quyền
             self::VIEW_ROLES => 'Xem danh sách vai trò',

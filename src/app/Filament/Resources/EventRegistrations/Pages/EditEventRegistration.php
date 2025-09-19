@@ -16,4 +16,15 @@ class EditEventRegistration extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // Nếu status thay đổi thành approved hoặc rejected, cập nhật thông tin duyệt
+        if (isset($data['status']) && in_array($data['status'], ['approved', 'rejected'])) {
+            $data['approved_at'] = now();
+            $data['approved_by'] = auth()->id();
+        }
+
+        return $data;
+    }
 }
