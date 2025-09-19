@@ -29,6 +29,12 @@ class DatabaseSeeder extends Seeder
             
             // 5. Tạo sự kiện
             EventSeeder::class,
+            
+            // 6. Tạo đăng ký sự kiện
+            EventRegistrationSeeder::class,
+            
+            // 7. Tạo bình luận sự kiện
+            EventCommentSeeder::class,
         ]);
     }
 }
