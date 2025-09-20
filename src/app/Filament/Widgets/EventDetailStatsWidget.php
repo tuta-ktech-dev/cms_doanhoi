@@ -14,7 +14,7 @@ class EventDetailStatsWidget extends BaseWidget
     protected function getStats(): array
     {
         // Lấy record từ parent page nếu có
-        $event = $this->record ?? $this->getRecord();
+        $event = $this->record;
         
         if (!$event) {
             return [];
@@ -59,10 +59,11 @@ class EventDetailStatsWidget extends BaseWidget
             ->with('user.student')
             ->get()
             ->groupBy('user.student.faculty')
-            ->map->count()
-            ->sortDesc();
+            ->map->count();
 
-        $topFaculty = $facultyStats->first() ? $facultyStats->keys()->first() . ' (' . $facultyStats->first() . ' SV)' : 'N/A';
+        $topFaculty = $facultyStats->count() > 0 
+            ? $facultyStats->sortDesc()->keys()->first() . ' (' . $facultyStats->sortDesc()->first() . ' SV)' 
+            : 'N/A';
 
         return [
             // Thống kê đăng ký

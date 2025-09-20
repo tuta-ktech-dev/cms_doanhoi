@@ -20,7 +20,7 @@ class EventAnalyticsWidget extends ChartWidget
     protected function getData(): array
     {
         // Lấy record từ parent page nếu có
-        $event = $this->record ?? $this->getRecord();
+        $event = $this->record;
         
         if (!$event) {
             return [

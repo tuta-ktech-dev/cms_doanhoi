@@ -13,7 +13,7 @@ class StudentDetailStatsWidget extends BaseWidget
     protected function getStats(): array
     {
         // Lấy record từ parent page nếu có
-        $student = $this->record ?? $this->getRecord();
+        $student = $this->record;
         
         if (!$student) {
             return [];
