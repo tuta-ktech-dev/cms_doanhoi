@@ -26,7 +26,7 @@ class AllStudentsAttendanceExport implements FromQuery, WithHeadings, WithMappin
 
     public function query()
     {
-        $query = Student::with(['user', 'eventAttendances.event.union']);
+        $query = Student::with(['user', 'eventAttendances.event']);
 
         // Áp dụng quyền hạn - chỉ hiển thị sinh viên thuộc các đoàn hội mà user quản lý
         if ($this->user->isUnionManager()) {
@@ -51,7 +51,7 @@ class AllStudentsAttendanceExport implements FromQuery, WithHeadings, WithMappin
             'Lớp',
             'Khoa',
             'Khóa',
-            'Điểm rèn luyện',
+            'Tổng điểm rèn luyện',
             'Tổng sự kiện tham gia',
             'Tổng sự kiện có mặt',
             'Tổng sự kiện vắng mặt',
@@ -70,6 +70,13 @@ class AllStudentsAttendanceExport implements FromQuery, WithHeadings, WithMappin
         $absentEvents = $student->eventAttendances->where('status', 'absent')->count();
         $attendanceRate = $totalEvents > 0 ? round(($presentEvents / $totalEvents) * 100, 2) : 0;
 
+        // Tính tổng điểm rèn luyện từ các sự kiện đã tham gia
+        $totalActivityPoints = $student->eventAttendances
+            ->where('status', 'present')
+            ->sum(function ($attendance) {
+                return $attendance->event->activity_points ?? 0;
+            });
+
         return [
             $index,
             $student->user->full_name,
@@ -80,7 +87,7 @@ class AllStudentsAttendanceExport implements FromQuery, WithHeadings, WithMappin
             $student->class ?? 'N/A',
             $student->faculty ?? 'N/A',
             $student->course ?? 'N/A',
-            $student->activity_points ?? '0.00',
+            $totalActivityPoints . ' điểm',
             $totalEvents,
             $presentEvents,
             $absentEvents,

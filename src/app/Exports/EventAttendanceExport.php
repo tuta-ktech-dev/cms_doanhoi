@@ -54,7 +54,7 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
             'MSSV',
             'Lớp',
             'Khoa',
-            'Điểm rèn luyện',
+            'Điểm rèn luyện (sự kiện)',
             'Sự kiện',
             'Đoàn hội',
             'Trạng thái',
@@ -70,6 +70,10 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
         static $index = 0;
         $index++;
 
+        // Tính điểm rèn luyện dựa trên sự kiện này
+        $eventActivityPoints = $attendance->event->activity_points ?? 0;
+        $earnedPoints = $attendance->status === 'present' ? $eventActivityPoints : 0;
+
         return [
             $index,
             $attendance->user->full_name,
@@ -77,7 +81,7 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
             $attendance->user->student?->student_id ?? 'N/A',
             $attendance->user->student?->class ?? 'N/A',
             $attendance->user->student?->faculty ?? 'N/A',
-            $attendance->user->student?->activity_points ?? '0.00',
+            $earnedPoints . ' điểm',
             $attendance->event->title,
             $attendance->event->union->name,
             $attendance->status_label,
