@@ -29,11 +29,11 @@ class Student extends Model
 
     public function eventRegistrations()
     {
-        return $this->hasMany(EventRegistration::class);
+        return $this->hasMany(EventRegistration::class, 'user_id', 'user_id');
     }
 
     public function eventAttendances()
     {
-        return $this->hasMany(EventAttendance::class);
+        return $this->hasMany(EventAttendance::class, 'user_id', 'user_id');
     }
 }
