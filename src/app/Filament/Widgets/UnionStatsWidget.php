@@ -100,12 +100,7 @@ class UnionStatsWidget extends BaseWidget
                 ->description($activeStudentRate . '% tỷ lệ hoạt động')
                 ->descriptionIcon('heroicon-m-academic-cap')
                 ->color('purple'),
-
-            Stat::make('Đoàn hội hàng đầu', $mostActiveUnionName)
-                ->description($mostActiveUnionEvents . ' sự kiện')
-                ->descriptionIcon('heroicon-m-trophy')
-                ->color('amber'),
-
+                
             Stat::make('Điểm TB/SK', $avgActivityPoints . ' điểm')
                 ->description('Điểm trung bình mỗi sự kiện')
                 ->descriptionIcon('heroicon-m-star')
