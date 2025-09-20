@@ -91,6 +91,15 @@ class EventsTable
                         false => 'Không',
                     ]),
             ])
+            ->recordActions([
+                \Filament\Actions\ActionGroup::make([
+                    \Filament\Actions\ViewAction::make()
+                        ->label('Xem chi tiết'),
+                    
+                    \Filament\Actions\EditAction::make()
+                        ->label('Chỉnh sửa'),
+                ])
+            ])
             ->defaultSort('start_date', 'desc');
     }
 }

@@ -6,6 +6,9 @@ use App\Enums\PermissionEnum;
 use App\Filament\Resources\Events\Pages\CreateEvent;
 use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\ListEvents;
+use App\Filament\Resources\Events\Pages\ViewEvent;
+use App\Filament\Resources\Events\RelationManagers\EventCommentsRelationManager;
+use App\Filament\Resources\Events\RelationManagers\EventRegistrationsRelationManager;
 use App\Filament\Resources\Events\Schemas\EventForm;
 use App\Filament\Resources\Events\Tables\EventsTable;
 use App\Models\Event;
@@ -45,7 +48,8 @@ class EventResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            EventRegistrationsRelationManager::class,
+            EventCommentsRelationManager::class,
         ];
     }
 
@@ -54,6 +58,7 @@ class EventResource extends Resource
         return [
             'index' => ListEvents::route('/'),
             'create' => CreateEvent::route('/create'),
+            'view' => ViewEvent::route('/{record}'),
             'edit' => EditEvent::route('/{record}/edit'),
         ];
     }
