@@ -71,7 +71,7 @@ class StudentsTable
                     ->label('Điểm rèn luyện')
                     ->getStateUsing(function ($record) {
                         return $record->eventAttendances()
-                            ->where('status', 'present')
+                            ->where('event_attendance.status', 'present')
                             ->with('event')
                             ->get()
                             ->sum(function ($attendance) {

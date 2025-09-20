@@ -21,16 +21,16 @@ class StudentDetailStatsWidget extends BaseWidget
 
         // Thống kê đăng ký sự kiện
         $totalRegistrations = $student->eventRegistrations()->count();
-        $approvedRegistrations = $student->eventRegistrations()->where('status', 'approved')->count();
-        $pendingRegistrations = $student->eventRegistrations()->where('status', 'pending')->count();
-        $rejectedRegistrations = $student->eventRegistrations()->where('status', 'rejected')->count();
+        $approvedRegistrations = $student->eventRegistrations()->where('event_registrations.status', 'approved')->count();
+        $pendingRegistrations = $student->eventRegistrations()->where('event_registrations.status', 'pending')->count();
+        $rejectedRegistrations = $student->eventRegistrations()->where('event_registrations.status', 'rejected')->count();
 
         // Thống kê tham gia sự kiện
         $totalAttendance = $student->eventAttendances()->count();
-        $presentEvents = $student->eventAttendances()->where('status', 'present')->count();
-        $absentEvents = $student->eventAttendances()->where('status', 'absent')->count();
-        $lateEvents = $student->eventAttendances()->where('status', 'late')->count();
-        $excusedEvents = $student->eventAttendances()->where('status', 'excused')->count();
+        $presentEvents = $student->eventAttendances()->where('event_attendance.status', 'present')->count();
+        $absentEvents = $student->eventAttendances()->where('event_attendance.status', 'absent')->count();
+        $lateEvents = $student->eventAttendances()->where('event_attendance.status', 'late')->count();
+        $excusedEvents = $student->eventAttendances()->where('event_attendance.status', 'excused')->count();
 
         // Tính tỷ lệ
         $approvalRate = $totalRegistrations > 0 ? round(($approvedRegistrations / $totalRegistrations) * 100, 1) : 0;
