@@ -79,7 +79,7 @@ class StudentsTable
                             });
                     })
                     ->formatStateUsing(fn ($state) => $state . ' điểm')
-                    ->sortable(),
+                    ->sortable(false), // Tắt sort vì không có cột thực tế
 
                 TextColumn::make('event_registrations_count')
                     ->label('Đăng ký SK')
