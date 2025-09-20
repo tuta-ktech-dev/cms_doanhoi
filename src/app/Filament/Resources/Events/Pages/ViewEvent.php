@@ -16,4 +16,13 @@ class ViewEvent extends ViewRecord
             EditAction::make(),
         ];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\EventDetailStatsWidget::class,
+            \App\Filament\Widgets\EventAnalyticsWidget::class,
+            \App\Filament\Widgets\EventTimelineWidget::class,
+        ];
+    }
 }
