@@ -42,6 +42,14 @@ class EventAttendance extends Model
     }
 
     /**
+     * Get the student information through user.
+     */
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class, 'user_id', 'user_id');
+    }
+
+    /**
      * Get the user who registered this attendance.
      */
     public function registeredBy(): BelongsTo

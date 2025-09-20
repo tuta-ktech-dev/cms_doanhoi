@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\EventAttendances\Pages;
 
 use App\Exports\EventAttendanceExport;
+use App\Exports\EventAttendanceByEventExport;
+use App\Exports\AllStudentsAttendanceExport;
 use App\Filament\Resources\EventAttendances\EventAttendanceResource;
 use App\Models\Event;
 use App\Models\Union;
@@ -10,6 +12,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Support\Enums\MaxWidth;
+use Filament\Forms\Components\Select;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ListEventAttendances extends ListRecords
@@ -22,14 +25,43 @@ class ListEventAttendances extends ListRecords
             CreateAction::make()
                 ->label('Thêm điểm danh'),
             
-            Action::make('export')
-                ->label('Xuất Excel')
+            Action::make('export_all')
+                ->label('Xuất tất cả')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->action(function () {
-                    $fileName = 'diem_danh_su_kien_' . now()->format('Y_m_d_H_i_s') . '.xlsx';
+                    $fileName = 'diem_danh_tat_ca_' . now()->format('Y_m_d_H_i_s') . '.xlsx';
                     
                     return Excel::download(new EventAttendanceExport(), $fileName);
+                }),
+            
+            Action::make('export_by_event')
+                ->label('Xuất theo sự kiện')
+                ->icon('heroicon-o-calendar-days')
+                ->color('info')
+                ->form([
+                    Select::make('event_id')
+                        ->label('Chọn sự kiện')
+                        ->options($this->getEventOptions())
+                        ->required()
+                        ->searchable()
+                        ->preload(),
+                ])
+                ->action(function (array $data) {
+                    $event = Event::find($data['event_id']);
+                    $fileName = 'diem_danh_' . \Str::slug($event->title) . '_' . now()->format('Y_m_d_H_i_s') . '.xlsx';
+                    
+                    return Excel::download(new EventAttendanceByEventExport($data['event_id']), $fileName);
+                }),
+            
+            Action::make('export_students')
+                ->label('Xuất sinh viên')
+                ->icon('heroicon-o-users')
+                ->color('warning')
+                ->action(function () {
+                    $fileName = 'sinh_vien_diem_danh_' . now()->format('Y_m_d_H_i_s') . '.xlsx';
+                    
+                    return Excel::download(new AllStudentsAttendanceExport(), $fileName);
                 }),
         ];
     }
@@ -98,7 +130,7 @@ class ListEventAttendances extends ListRecords
             });
         }
         
-        return parent::getTableQuery()->whereRaw('1 = 0'); // Không có quyền
+        return parent::getTableQuery()->where('id', '<', 0); // Không có quyền
     }
 
     protected function getHeaderWidgets(): array
@@ -106,5 +138,25 @@ class ListEventAttendances extends ListRecords
         return [
             \App\Filament\Widgets\AttendanceStatsWidget::class,
         ];
+    }
+
+    protected function getEventOptions(): array
+    {
+        $user = auth()->user();
+        
+        if ($user->isAdmin()) {
+            // Admin có thể xem tất cả sự kiện
+            $events = Event::with('union')->get();
+        } elseif ($user->isUnionManager()) {
+            // Union Manager chỉ xem sự kiện của đoàn hội mình quản lý
+            $userUnionIds = $user->unionManager->pluck('union_id')->toArray();
+            $events = Event::whereIn('union_id', $userUnionIds)->with('union')->get();
+        } else {
+            $events = collect();
+        }
+
+        return $events->mapWithKeys(function ($event) {
+            return [$event->id => $event->title . ' (' . $event->union->name . ')'];
+        })->toArray();
     }
 }

@@ -15,24 +15,23 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, WithStyles, WithColumnWidths, WithEvents
+class EventAttendanceByEventExport implements FromQuery, WithHeadings, WithMapping, WithStyles, WithColumnWidths, WithEvents
 {
     protected $eventId;
     protected $user;
+    protected $event;
 
-    public function __construct($eventId = null)
+    public function __construct($eventId)
     {
         $this->eventId = $eventId;
         $this->user = auth()->user();
+        $this->event = \App\Models\Event::with('union')->find($eventId);
     }
 
     public function query()
     {
-        $query = EventAttendance::with(['user.student', 'event.union', 'registeredBy']);
-
-        if ($this->eventId) {
-            $query->where('event_id', $this->eventId);
-        }
+        $query = EventAttendance::with(['user.student', 'event.union', 'registeredBy'])
+            ->where('event_id', $this->eventId);
 
         // Áp dụng quyền hạn
         if ($this->user->isUnionManager()) {
@@ -55,8 +54,6 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
             'Lớp',
             'Khoa',
             'Điểm rèn luyện',
-            'Sự kiện',
-            'Đoàn hội',
             'Trạng thái',
             'Thời gian điểm danh',
             'Người điểm danh',
@@ -78,8 +75,6 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
             $attendance->user->student?->class ?? 'N/A',
             $attendance->user->student?->faculty ?? 'N/A',
             $attendance->user->student?->activity_points ?? '0.00',
-            $attendance->event->title,
-            $attendance->event->union->name,
             $attendance->status_label,
             $attendance->attended_at->format('d/m/Y H:i'),
             $attendance->registeredBy?->full_name ?? 'Hệ thống',
@@ -98,13 +93,11 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
             'E' => 15,  // Lớp
             'F' => 20,  // Khoa
             'G' => 15,  // Điểm rèn luyện
-            'H' => 35,  // Sự kiện
-            'I' => 20,  // Đoàn hội
-            'J' => 15,  // Trạng thái
-            'K' => 20,  // Thời gian điểm danh
-            'L' => 20,  // Người điểm danh
-            'M' => 30,  // Ghi chú
-            'N' => 20,  // Ngày tạo
+            'H' => 15,  // Trạng thái
+            'I' => 20,  // Thời gian điểm danh
+            'J' => 20,  // Người điểm danh
+            'K' => 30,  // Ghi chú
+            'L' => 20,  // Ngày tạo
         ];
     }
 
@@ -138,7 +131,7 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
                 $sheet = $event->sheet->getDelegate();
                 
                 // Add borders to all cells
-                $sheet->getStyle('A1:N' . $sheet->getHighestRow())
+                $sheet->getStyle('A1:L' . $sheet->getHighestRow())
                     ->getBorders()
                     ->getAllBorders()
                     ->setBorderStyle(Border::BORDER_THIN);
@@ -149,19 +142,26 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
                 }
 
                 // Add title
-                $sheet->insertNewRowBefore(1, 2);
-                $sheet->mergeCells('A1:N1');
+                $sheet->insertNewRowBefore(1, 3);
+                $sheet->mergeCells('A1:L1');
                 $sheet->setCellValue('A1', 'BÁO CÁO ĐIỂM DANH SỰ KIỆN');
                 $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
                 $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $sheet->getRowDimension(1)->setRowHeight(30);
 
-                // Add export info
-                $sheet->mergeCells('A2:N2');
-                $sheet->setCellValue('A2', 'Xuất ngày: ' . now()->format('d/m/Y H:i') . ' - Người xuất: ' . $this->user->full_name);
-                $sheet->getStyle('A2')->getFont()->setSize(10);
+                // Add event info
+                $sheet->mergeCells('A2:L2');
+                $sheet->setCellValue('A2', 'Sự kiện: ' . $this->event->title . ' - Đoàn hội: ' . $this->event->union->name);
+                $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(12);
                 $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                $sheet->getRowDimension(2)->setRowHeight(20);
+                $sheet->getRowDimension(2)->setRowHeight(25);
+
+                // Add export info
+                $sheet->mergeCells('A3:L3');
+                $sheet->setCellValue('A3', 'Xuất ngày: ' . now()->format('d/m/Y H:i') . ' - Người xuất: ' . $this->user->full_name);
+                $sheet->getStyle('A3')->getFont()->setSize(10);
+                $sheet->getStyle('A3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getRowDimension(3)->setRowHeight(20);
             },
         ];
     }

@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\EventAttendance;
+use App\Models\Student;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -15,34 +15,28 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, WithStyles, WithColumnWidths, WithEvents
+class AllStudentsAttendanceExport implements FromQuery, WithHeadings, WithMapping, WithStyles, WithColumnWidths, WithEvents
 {
-    protected $eventId;
     protected $user;
 
-    public function __construct($eventId = null)
+    public function __construct()
     {
-        $this->eventId = $eventId;
         $this->user = auth()->user();
     }
 
     public function query()
     {
-        $query = EventAttendance::with(['user.student', 'event.union', 'registeredBy']);
+        $query = Student::with(['user', 'eventAttendances.event.union']);
 
-        if ($this->eventId) {
-            $query->where('event_id', $this->eventId);
-        }
-
-        // Áp dụng quyền hạn
+        // Áp dụng quyền hạn - chỉ hiển thị sinh viên thuộc các đoàn hội mà user quản lý
         if ($this->user->isUnionManager()) {
             $userUnionIds = $this->user->unionManager->pluck('union_id')->toArray();
-            $query->whereHas('event', function ($q) use ($userUnionIds) {
+            $query->whereHas('eventAttendances.event', function ($q) use ($userUnionIds) {
                 $q->whereIn('union_id', $userUnionIds);
             });
         }
 
-        return $query->orderBy('attended_at', 'desc');
+        return $query->orderBy('student_id');
     }
 
     public function headings(): array
@@ -52,39 +46,46 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
             'Họ và tên',
             'Email',
             'MSSV',
+            'Ngày sinh',
+            'Giới tính',
             'Lớp',
             'Khoa',
+            'Khóa',
             'Điểm rèn luyện',
-            'Sự kiện',
-            'Đoàn hội',
-            'Trạng thái',
-            'Thời gian điểm danh',
-            'Người điểm danh',
-            'Ghi chú',
+            'Tổng sự kiện tham gia',
+            'Tổng sự kiện có mặt',
+            'Tổng sự kiện vắng mặt',
+            'Tỷ lệ tham gia (%)',
             'Ngày tạo',
         ];
     }
 
-    public function map($attendance): array
+    public function map($student): array
     {
         static $index = 0;
         $index++;
 
+        $totalEvents = $student->eventAttendances->count();
+        $presentEvents = $student->eventAttendances->where('status', 'present')->count();
+        $absentEvents = $student->eventAttendances->where('status', 'absent')->count();
+        $attendanceRate = $totalEvents > 0 ? round(($presentEvents / $totalEvents) * 100, 2) : 0;
+
         return [
             $index,
-            $attendance->user->full_name,
-            $attendance->user->email,
-            $attendance->user->student?->student_id ?? 'N/A',
-            $attendance->user->student?->class ?? 'N/A',
-            $attendance->user->student?->faculty ?? 'N/A',
-            $attendance->user->student?->activity_points ?? '0.00',
-            $attendance->event->title,
-            $attendance->event->union->name,
-            $attendance->status_label,
-            $attendance->attended_at->format('d/m/Y H:i'),
-            $attendance->registeredBy?->full_name ?? 'Hệ thống',
-            $attendance->notes ?? '',
-            $attendance->created_at->format('d/m/Y H:i'),
+            $student->user->full_name,
+            $student->user->email,
+            $student->student_id,
+            $student->date_of_birth?->format('d/m/Y') ?? 'N/A',
+            $student->gender === 'male' ? 'Nam' : ($student->gender === 'female' ? 'Nữ' : 'N/A'),
+            $student->class ?? 'N/A',
+            $student->faculty ?? 'N/A',
+            $student->course ?? 'N/A',
+            $student->activity_points ?? '0.00',
+            $totalEvents,
+            $presentEvents,
+            $absentEvents,
+            $attendanceRate . '%',
+            $student->created_at->format('d/m/Y H:i'),
         ];
     }
 
@@ -95,16 +96,17 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
             'B' => 25,  // Họ và tên
             'C' => 30,  // Email
             'D' => 12,  // MSSV
-            'E' => 15,  // Lớp
-            'F' => 20,  // Khoa
-            'G' => 15,  // Điểm rèn luyện
-            'H' => 35,  // Sự kiện
-            'I' => 20,  // Đoàn hội
-            'J' => 15,  // Trạng thái
-            'K' => 20,  // Thời gian điểm danh
-            'L' => 20,  // Người điểm danh
-            'M' => 30,  // Ghi chú
-            'N' => 20,  // Ngày tạo
+            'E' => 12,  // Ngày sinh
+            'F' => 10,  // Giới tính
+            'G' => 15,  // Lớp
+            'H' => 20,  // Khoa
+            'I' => 8,   // Khóa
+            'J' => 15,  // Điểm rèn luyện
+            'K' => 18,  // Tổng sự kiện tham gia
+            'L' => 18,  // Tổng sự kiện có mặt
+            'M' => 18,  // Tổng sự kiện vắng mặt
+            'N' => 15,  // Tỷ lệ tham gia
+            'O' => 20,  // Ngày tạo
         ];
     }
 
@@ -120,7 +122,7 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => [
-                        'rgb' => 'E3F2FD',
+                        'rgb' => 'E8F5E8',
                     ],
                 ],
                 'alignment' => [
@@ -138,7 +140,7 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
                 $sheet = $event->sheet->getDelegate();
                 
                 // Add borders to all cells
-                $sheet->getStyle('A1:N' . $sheet->getHighestRow())
+                $sheet->getStyle('A1:O' . $sheet->getHighestRow())
                     ->getBorders()
                     ->getAllBorders()
                     ->setBorderStyle(Border::BORDER_THIN);
@@ -150,14 +152,14 @@ class EventAttendanceExport implements FromQuery, WithHeadings, WithMapping, Wit
 
                 // Add title
                 $sheet->insertNewRowBefore(1, 2);
-                $sheet->mergeCells('A1:N1');
-                $sheet->setCellValue('A1', 'BÁO CÁO ĐIỂM DANH SỰ KIỆN');
+                $sheet->mergeCells('A1:O1');
+                $sheet->setCellValue('A1', 'BÁO CÁO TỔNG HỢP SINH VIÊN VÀ ĐIỂM DANH');
                 $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
                 $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $sheet->getRowDimension(1)->setRowHeight(30);
 
                 // Add export info
-                $sheet->mergeCells('A2:N2');
+                $sheet->mergeCells('A2:O2');
                 $sheet->setCellValue('A2', 'Xuất ngày: ' . now()->format('d/m/Y H:i') . ' - Người xuất: ' . $this->user->full_name);
                 $sheet->getStyle('A2')->getFont()->setSize(10);
                 $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
