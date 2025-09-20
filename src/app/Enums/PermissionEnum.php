@@ -27,6 +27,12 @@ enum PermissionEnum: string
     case APPROVE_REGISTRATIONS = 'approve_registrations';
     case REJECT_REGISTRATIONS = 'reject_registrations';
     
+    // Quyền quản lý điểm danh
+    case VIEW_ATTENDANCE = 'view_attendance';
+    case CREATE_ATTENDANCE = 'create_attendance';
+    case EDIT_ATTENDANCE = 'edit_attendance';
+    case DELETE_ATTENDANCE = 'delete_attendance';
+    
     
     // Quyền quản lý vai trò và phân quyền
     case VIEW_ROLES = 'view_roles';
@@ -62,6 +68,12 @@ enum PermissionEnum: string
             self::VIEW_REGISTRATIONS => 'Xem danh sách đăng ký',
             self::APPROVE_REGISTRATIONS => 'Duyệt đăng ký',
             self::REJECT_REGISTRATIONS => 'Từ chối đăng ký',
+            
+            // Quyền quản lý điểm danh
+            self::VIEW_ATTENDANCE => 'Xem danh sách điểm danh',
+            self::CREATE_ATTENDANCE => 'Tạo điểm danh mới',
+            self::EDIT_ATTENDANCE => 'Chỉnh sửa điểm danh',
+            self::DELETE_ATTENDANCE => 'Xóa điểm danh',
             
             
             // Quyền quản lý vai trò và phân quyền
@@ -106,6 +118,11 @@ enum PermissionEnum: string
             self::VIEW_REGISTRATIONS,
             self::APPROVE_REGISTRATIONS,
             self::REJECT_REGISTRATIONS,
+            // Quản lý điểm danh cho sự kiện mình tạo
+            self::VIEW_ATTENDANCE,
+            self::CREATE_ATTENDANCE,
+            self::EDIT_ATTENDANCE,
+            self::DELETE_ATTENDANCE,
         ];
     }
     

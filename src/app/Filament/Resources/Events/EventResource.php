@@ -7,6 +7,7 @@ use App\Filament\Resources\Events\Pages\CreateEvent;
 use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\ListEvents;
 use App\Filament\Resources\Events\Pages\ViewEvent;
+use App\Filament\Resources\Events\RelationManagers\EventAttendanceRelationManager;
 use App\Filament\Resources\Events\RelationManagers\EventCommentsRelationManager;
 use App\Filament\Resources\Events\RelationManagers\EventRegistrationsRelationManager;
 use App\Filament\Resources\Events\Schemas\EventForm;
@@ -35,6 +36,11 @@ class EventResource extends Resource
         return 'Quản lý sự kiện';
     }
 
+    public static function getNavigationSort(): ?int
+    {
+        return 1; // Hiển thị đầu tiên
+    }
+
     public static function form(Schema $schema): Schema
     {
         return EventForm::configure($schema);
@@ -49,6 +55,7 @@ class EventResource extends Resource
     {
         return [
             EventRegistrationsRelationManager::class,
+            EventAttendanceRelationManager::class,
             EventCommentsRelationManager::class,
         ];
     }

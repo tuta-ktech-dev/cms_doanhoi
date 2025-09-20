@@ -35,6 +35,9 @@ class DatabaseSeeder extends Seeder
             
             // 7. Tạo bình luận sự kiện
             EventCommentSeeder::class,
+            
+            // 8. Tạo điểm danh sự kiện
+            EventAttendanceSeeder::class,
         ]);
     }
 }

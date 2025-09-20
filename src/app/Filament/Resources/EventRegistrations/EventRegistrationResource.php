@@ -27,6 +27,11 @@ class EventRegistrationResource extends Resource
         return 'Quản lý sự kiện';
     }
 
+    public static function getNavigationSort(): ?int
+    {
+        return 2; // Hiển thị sau Events
+    }
+
     public static function form(Schema $schema): Schema
     {
         return EventRegistrationForm::configure($schema);

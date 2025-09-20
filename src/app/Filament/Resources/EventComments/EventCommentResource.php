@@ -28,6 +28,11 @@ class EventCommentResource extends Resource
         return 'Quản lý sự kiện';
     }
 
+    public static function getNavigationSort(): ?int
+    {
+        return 4; // Hiển thị cuối cùng
+    }
+
     public static function table(Table $table): Table
     {
         return EventCommentsTable::configure($table);
