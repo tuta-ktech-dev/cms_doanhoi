@@ -30,16 +30,16 @@ class UnionDetailStatsWidget extends BaseWidget
 
         // Thống kê đăng ký
         $totalRegistrations = $union->eventRegistrations()->count();
-        $approvedRegistrations = $union->eventRegistrations()->where('status', 'approved')->count();
-        $pendingRegistrations = $union->eventRegistrations()->where('status', 'pending')->count();
-        $rejectedRegistrations = $union->eventRegistrations()->where('status', 'rejected')->count();
+        $approvedRegistrations = $union->eventRegistrations()->where('event_registrations.status', 'approved')->count();
+        $pendingRegistrations = $union->eventRegistrations()->where('event_registrations.status', 'pending')->count();
+        $rejectedRegistrations = $union->eventRegistrations()->where('event_registrations.status', 'rejected')->count();
 
         // Thống kê điểm danh
         $totalAttendance = $union->eventAttendances()->count();
-        $presentAttendance = $union->eventAttendances()->where('status', 'present')->count();
-        $absentAttendance = $union->eventAttendances()->where('status', 'absent')->count();
-        $lateAttendance = $union->eventAttendances()->where('status', 'late')->count();
-        $excusedAttendance = $union->eventAttendances()->where('status', 'excused')->count();
+        $presentAttendance = $union->eventAttendances()->where('event_attendance.status', 'present')->count();
+        $absentAttendance = $union->eventAttendances()->where('event_attendance.status', 'absent')->count();
+        $lateAttendance = $union->eventAttendances()->where('event_attendance.status', 'late')->count();
+        $excusedAttendance = $union->eventAttendances()->where('event_attendance.status', 'excused')->count();
 
         // Tính tỷ lệ
         $approvalRate = $totalRegistrations > 0 ? round(($approvedRegistrations / $totalRegistrations) * 100, 1) : 0;
@@ -48,7 +48,7 @@ class UnionDetailStatsWidget extends BaseWidget
 
         // Thống kê điểm rèn luyện
         $totalActivityPoints = $union->eventAttendances()
-            ->where('status', 'present')
+            ->where('event_attendance.status', 'present')
             ->with('event')
             ->get()
             ->sum(function ($attendance) {

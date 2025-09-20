@@ -82,7 +82,7 @@ class UnionsTable
                 TextColumn::make('avg_attendance_rate')
                     ->label('Tỷ lệ tham gia')
                     ->getStateUsing(function ($record) {
-                        $totalRegistrations = $record->eventRegistrations()->where('status', 'approved')->count();
+                        $totalRegistrations = $record->eventRegistrations()->where('event_registrations.status', 'approved')->count();
                         $totalAttendance = $record->eventAttendances()->count();
                         return $totalRegistrations > 0 ? round(($totalAttendance / $totalRegistrations) * 100, 1) : 0;
                     })

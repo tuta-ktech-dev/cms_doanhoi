@@ -35,12 +35,12 @@ class Union extends Model
 
     public function eventRegistrations()
     {
-        return $this->hasManyThrough(EventRegistration::class, Event::class);
+        return $this->hasManyThrough(EventRegistration::class, Event::class, 'union_id', 'event_id', 'id', 'id');
     }
 
     public function eventAttendances()
     {
-        return $this->hasManyThrough(EventAttendance::class, Event::class);
+        return $this->hasManyThrough(EventAttendance::class, Event::class, 'union_id', 'event_id', 'id', 'id');
     }
 
     public function scopeActive($query)
