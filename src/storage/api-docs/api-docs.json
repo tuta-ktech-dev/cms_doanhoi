@@ -731,6 +731,464 @@
                     }
                 ]
             }
+        },
+        "/student/events": {
+            "get": {
+                "tags": [
+                    "Student Events"
+                ],
+                "summary": "Lấy danh sách sự kiện",
+                "description": "Lấy danh sách tất cả sự kiện có thể đăng ký",
+                "operationId": "7a8b93212cab50f76e798f1f10f32402",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Lọc theo trạng thái sự kiện",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "upcoming",
+                                "ongoing",
+                                "completed"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "union_id",
+                        "in": "query",
+                        "description": "Lọc theo đoàn hội",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Số trang",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Số item per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Danh sách sự kiện",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "events": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "pagination": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/student/events/{id}": {
+            "get": {
+                "tags": [
+                    "Student Events"
+                ],
+                "summary": "Lấy chi tiết sự kiện",
+                "description": "Lấy thông tin chi tiết của một sự kiện",
+                "operationId": "9ddf154a42ab7f759dd5fe90276b088b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID của sự kiện",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chi tiết sự kiện",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Sự kiện không tồn tại",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sự kiện không tồn tại"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/student/events/{id}/register": {
+            "post": {
+                "tags": [
+                    "Student Events"
+                ],
+                "summary": "Đăng ký tham gia sự kiện",
+                "description": "Đăng ký tham gia một sự kiện",
+                "operationId": "e91eb0bf1ab6f312852e475012498221",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID của sự kiện",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "notes": {
+                                        "type": "string",
+                                        "example": "Ghi chú đăng ký"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Đăng ký thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Đăng ký thành công"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Không thể đăng ký",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không thể đăng ký sự kiện này"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/student/events/{id}/unregister": {
+            "delete": {
+                "tags": [
+                    "Student Events"
+                ],
+                "summary": "Hủy đăng ký sự kiện",
+                "description": "Hủy đăng ký tham gia một sự kiện",
+                "operationId": "bdc38dc48162c769c8f42d0779d8ec2b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID của sự kiện",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Hủy đăng ký thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Hủy đăng ký thành công"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Không thể hủy đăng ký",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Không thể hủy đăng ký"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/student/registrations": {
+            "get": {
+                "tags": [
+                    "Student Events"
+                ],
+                "summary": "Lấy danh sách đăng ký",
+                "description": "Lấy danh sách đăng ký sự kiện của sinh viên",
+                "operationId": "e0792d55d6ad92229d6256b156f74394",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Lọc theo trạng thái đăng ký",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "approved",
+                                "rejected"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Danh sách đăng ký",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/student/attendance": {
+            "get": {
+                "tags": [
+                    "Student Events"
+                ],
+                "summary": "Lấy danh sách điểm danh",
+                "description": "Lấy danh sách điểm danh của sinh viên",
+                "operationId": "97e984ff0fb3d3849716c1d1ed0d2281",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Lọc theo trạng thái điểm danh",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "present",
+                                "absent",
+                                "late",
+                                "excused"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Danh sách điểm danh",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/student/statistics": {
+            "get": {
+                "tags": [
+                    "Student Events"
+                ],
+                "summary": "Lấy thống kê sinh viên",
+                "description": "Lấy thống kê tổng quan của sinh viên",
+                "operationId": "f92279dfee94f6739d5bb039f4710d98",
+                "responses": {
+                    "200": {
+                        "description": "Thống kê sinh viên",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -746,6 +1204,10 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Student Events",
+            "description": "Student Events"
         }
     ]
 }

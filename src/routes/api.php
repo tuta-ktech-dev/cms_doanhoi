@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\StudentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('profile', [AuthController::class, 'profile']);
         Route::put('profile', [AuthController::class, 'updateProfile']);
         Route::post('change-password', [AuthController::class, 'changePassword']);
+    });
+
+    // Student routes
+    Route::prefix('student')->group(function () {
+        Route::get('events', [StudentController::class, 'getEvents']);
+        Route::get('events/{id}', [StudentController::class, 'getEvent']);
+        Route::post('events/{id}/register', [StudentController::class, 'registerEvent']);
+        Route::delete('events/{id}/unregister', [StudentController::class, 'unregisterEvent']);
+        Route::get('registrations', [StudentController::class, 'getRegistrations']);
+        Route::get('attendance', [StudentController::class, 'getAttendance']);
+        Route::get('statistics', [StudentController::class, 'getStatistics']);
     });
 });
 
