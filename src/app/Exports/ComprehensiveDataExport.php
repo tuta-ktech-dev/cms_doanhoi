@@ -48,7 +48,7 @@ class ComprehensiveDataExport implements FromQuery, WithHeadings, WithMapping, W
             'Khóa',
             'Giới tính',
             'Ngày sinh',
-            'Điểm rèn luyện hiện tại',
+            'Điểm rèn luyện từ SK',
             'Tổng sự kiện đăng ký',
             'Tổng sự kiện tham gia',
             'Tổng sự kiện có mặt',
@@ -102,7 +102,7 @@ class ComprehensiveDataExport implements FromQuery, WithHeadings, WithMapping, W
             $student->course ?? 'N/A',
             $student->gender === 'male' ? 'Nam' : ($student->gender === 'female' ? 'Nữ' : 'Khác'),
             $student->date_of_birth?->format('d/m/Y') ?? 'N/A',
-            $student->activity_points ?? '0.00',
+            $totalActivityPoints . ' điểm',
             $totalRegistrations,
             $totalAttendance,
             $presentEvents,
@@ -127,7 +127,7 @@ class ComprehensiveDataExport implements FromQuery, WithHeadings, WithMapping, W
             'G' => 8,   // Khóa
             'H' => 10,  // Giới tính
             'I' => 12,  // Ngày sinh
-            'J' => 18,  // Điểm rèn luyện hiện tại
+            'J' => 18,  // Điểm rèn luyện từ SK
             'K' => 18,  // Tổng sự kiện đăng ký
             'L' => 18,  // Tổng sự kiện tham gia
             'M' => 18,  // Tổng sự kiện có mặt

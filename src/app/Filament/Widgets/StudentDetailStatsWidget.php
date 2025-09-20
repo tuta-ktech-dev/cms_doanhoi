@@ -72,8 +72,8 @@ class StudentDetailStatsWidget extends BaseWidget
                 ->descriptionIcon('heroicon-m-calendar')
                 ->color('warning'),
 
-            Stat::make('Điểm hiện tại', ($student->activity_points ?? 0) . ' điểm')
-                ->description('Điểm rèn luyện trong profile')
+            Stat::make('Điểm từ SK', $totalActivityPoints . ' điểm')
+                ->description('Tổng điểm từ sự kiện đã tham gia')
                 ->descriptionIcon('heroicon-m-star')
                 ->color('amber'),
 
@@ -120,8 +120,8 @@ class StudentDetailStatsWidget extends BaseWidget
                 ->color('warning'),
 
             // Thống kê điểm rèn luyện
-            Stat::make('Điểm từ SK', $totalActivityPoints . ' điểm')
-                ->description('Tổng điểm từ sự kiện')
+            Stat::make('Điểm TB/SK', $totalAttendance > 0 ? round($totalActivityPoints / $totalAttendance, 1) . ' điểm' : '0 điểm')
+                ->description('Điểm trung bình mỗi sự kiện')
                 ->descriptionIcon('heroicon-m-trophy')
                 ->color('emerald'),
 

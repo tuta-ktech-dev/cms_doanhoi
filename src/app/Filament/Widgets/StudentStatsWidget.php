@@ -32,9 +32,33 @@ class StudentStatsWidget extends BaseWidget
         $activeStudents = Student::whereHas('eventAttendances')->count();
         $activeRate = $totalStudents > 0 ? round(($activeStudents / $totalStudents) * 100, 1) : 0;
         
-        // Thống kê điểm rèn luyện
-        $avgActivityPoints = Student::avg('activity_points') ?? 0;
-        $highActivityStudents = Student::where('activity_points', '>=', 80)->count();
+        // Thống kê điểm rèn luyện từ sự kiện
+        $studentsWithActivityPoints = Student::with('eventAttendances.event')
+            ->whereHas('eventAttendances', function ($query) {
+                $query->where('status', 'present');
+            })
+            ->get();
+
+        $totalActivityPoints = $studentsWithActivityPoints->sum(function ($student) {
+            return $student->eventAttendances
+                ->where('status', 'present')
+                ->sum(function ($attendance) {
+                    return $attendance->event->activity_points ?? 0;
+                });
+        });
+
+        $avgActivityPoints = $studentsWithActivityPoints->count() > 0 
+            ? $totalActivityPoints / $studentsWithActivityPoints->count() 
+            : 0;
+
+        $highActivityStudents = $studentsWithActivityPoints->filter(function ($student) {
+            $studentPoints = $student->eventAttendances
+                ->where('status', 'present')
+                ->sum(function ($attendance) {
+                    return $attendance->event->activity_points ?? 0;
+                });
+            return $studentPoints >= 80;
+        })->count();
         
         // Thống kê sự kiện
         $totalEvents = Event::count();
@@ -71,13 +95,13 @@ class StudentStatsWidget extends BaseWidget
                 ->descriptionIcon('heroicon-m-users')
                 ->color('success'),
 
-            Stat::make('Điểm TB', round($avgActivityPoints, 1) . ' điểm')
-                ->description('Điểm rèn luyện trung bình')
+            Stat::make('Điểm TB từ SK', round($avgActivityPoints, 1) . ' điểm')
+                ->description('Điểm rèn luyện TB từ sự kiện')
                 ->descriptionIcon('heroicon-m-star')
                 ->color('amber'),
 
-            Stat::make('Điểm cao', number_format($highActivityStudents))
-                ->description('SV có điểm ≥ 80')
+            Stat::make('Điểm cao từ SK', number_format($highActivityStudents))
+                ->description('SV có điểm ≥ 80 từ sự kiện')
                 ->descriptionIcon('heroicon-m-trophy')
                 ->color('emerald'),
 

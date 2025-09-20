@@ -67,9 +67,18 @@ class StudentsTable
                     ->date('d/m/Y')
                     ->sortable(),
 
-                TextColumn::make('activity_points')
+                TextColumn::make('activity_points_from_events')
                     ->label('Điểm rèn luyện')
-                    ->numeric(decimalPlaces: 2)
+                    ->getStateUsing(function ($record) {
+                        return $record->eventAttendances()
+                            ->where('status', 'present')
+                            ->with('event')
+                            ->get()
+                            ->sum(function ($attendance) {
+                                return $attendance->event->activity_points ?? 0;
+                            });
+                    })
+                    ->formatStateUsing(fn ($state) => $state . ' điểm')
                     ->sortable(),
 
                 TextColumn::make('event_registrations_count')
