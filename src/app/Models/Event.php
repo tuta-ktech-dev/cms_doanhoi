@@ -65,6 +65,22 @@ class Event extends Model
                     });
     }
 
+    public function scopeCompleted($query)
+    {
+        return $query->where('end_date', '<', now());
+    }
+
+    public function scopeOngoing($query)
+    {
+        return $query->where('start_date', '<=', now())
+                    ->where('end_date', '>=', now());
+    }
+
+    public function scopeUpcoming($query)
+    {
+        return $query->where('start_date', '>', now());
+    }
+
     public function getImageUrl(): string
     {
         if (!$this->image) {
@@ -73,7 +89,7 @@ class Event extends Model
         if (filter_var($this->image, FILTER_VALIDATE_URL)) {
             return $this->image;
         }
-        return Storage::disk('public')->url($this->image);
+        return asset('storage/' . $this->image);
     }
 
     public function getRegistrationCount(): int
@@ -87,5 +103,53 @@ class Event extends Model
             return false;
         }
         return $this->getRegistrationCount() >= $this->max_participants;
+    }
+
+    public function getAttendanceCount(): int
+    {
+        return $this->attendance()->count();
+    }
+
+    public function getPresentCount(): int
+    {
+        return $this->attendance()->where('status', 'present')->count();
+    }
+
+    public function getAbsentCount(): int
+    {
+        return $this->attendance()->where('status', 'absent')->count();
+    }
+
+    public function getAttendanceRate(): float
+    {
+        $totalRegistrations = $this->getRegistrationCount();
+        if ($totalRegistrations == 0) {
+            return 0;
+        }
+        return round(($this->getAttendanceCount() / $totalRegistrations) * 100, 2);
+    }
+
+    public function getPresentRate(): float
+    {
+        $totalAttendance = $this->getAttendanceCount();
+        if ($totalAttendance == 0) {
+            return 0;
+        }
+        return round(($this->getPresentCount() / $totalAttendance) * 100, 2);
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->end_date < now();
+    }
+
+    public function isOngoing(): bool
+    {
+        return $this->start_date <= now() && $this->end_date >= now();
+    }
+
+    public function isUpcoming(): bool
+    {
+        return $this->start_date > now();
     }
 }

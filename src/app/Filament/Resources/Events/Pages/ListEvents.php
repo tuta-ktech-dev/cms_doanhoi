@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\Events\Pages;
 
+use App\Exports\EventReportExport;
 use App\Filament\Resources\Events\EventResource;
 use Filament\Actions\CreateAction;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ListEvents extends ListRecords
 {
@@ -13,7 +16,18 @@ class ListEvents extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->label('Tạo sự kiện'),
+            
+            Action::make('export_report')
+                ->label('Báo cáo sự kiện')
+                ->icon('heroicon-o-chart-bar')
+                ->color('warning')
+                ->action(function () {
+                    $fileName = 'bao_cao_su_kien_' . now()->format('Y_m_d_H_i_s') . '.xlsx';
+                    
+                    return Excel::download(new EventReportExport(), $fileName);
+                }),
         ];
     }
 
@@ -33,5 +47,12 @@ class ListEvents extends ListRecords
         }
         
         return parent::getTableQuery();
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\EventStatsWidget::class,
+        ];
     }
 }
