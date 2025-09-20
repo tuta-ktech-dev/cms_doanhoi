@@ -23,9 +23,24 @@ class Union extends Model
         return $this->hasMany(UnionManager::class);
     }
 
+    public function unionManagers()
+    {
+        return $this->hasMany(UnionManager::class);
+    }
+
     public function events()
     {
         return $this->hasMany(Event::class);
+    }
+
+    public function eventRegistrations()
+    {
+        return $this->hasManyThrough(EventRegistration::class, Event::class);
+    }
+
+    public function eventAttendances()
+    {
+        return $this->hasManyThrough(EventAttendance::class, Event::class);
     }
 
     public function scopeActive($query)
@@ -49,6 +64,6 @@ class Union extends Model
         }
         
         // Nếu logo là đường dẫn tương đối trong storage, trả về URL đầy đủ
-        return Storage::disk('public')->url($this->logo);
+        return asset('storage/' . $this->logo);
     }
 }
