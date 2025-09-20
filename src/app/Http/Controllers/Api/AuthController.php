@@ -11,11 +11,89 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Info(
+ *     title="CMS Đoàn Hội API",
+ *     version="1.0.0",
+ *     description="API documentation for CMS Đoàn Hội - Student Management System",
+ *     @OA\Contact(
+ *         email="admin@example.com"
+ *     )
+ * )
+ * @OA\Server(
+ *     url="http://localhost:8000/api",
+ *     description="Local development server"
+ * )
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
+ */
 class AuthController extends Controller
 {
     /**
-     * Register a new student
+     * @OA\Post(
+     *     path="/auth/register",
+     *     summary="Đăng ký sinh viên mới",
+     *     description="Tạo tài khoản sinh viên mới với thông tin đầy đủ",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"full_name","email","password","password_confirmation","student_id","class","faculty","course","date_of_birth","gender"},
+     *             @OA\Property(property="full_name", type="string", example="Nguyễn Văn A"),
+     *             @OA\Property(property="email", type="string", format="email", example="student@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="password123"),
+     *             @OA\Property(property="student_id", type="string", example="SV001"),
+     *             @OA\Property(property="class", type="string", example="CNTT01"),
+     *             @OA\Property(property="faculty", type="string", example="Công nghệ thông tin"),
+     *             @OA\Property(property="course", type="string", example="2024"),
+     *             @OA\Property(property="date_of_birth", type="string", format="date", example="2000-01-01"),
+     *             @OA\Property(property="gender", type="string", enum={"male","female"}, example="male"),
+     *             @OA\Property(property="phone", type="string", example="0123456789")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Đăng ký thành công",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Đăng ký thành công"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="user", type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="full_name", type="string", example="Nguyễn Văn A"),
+     *                     @OA\Property(property="email", type="string", example="student@example.com"),
+     *                     @OA\Property(property="role", type="string", example="student")
+     *                 ),
+     *                 @OA\Property(property="student", type="object",
+     *                     @OA\Property(property="student_id", type="string", example="SV001"),
+     *                     @OA\Property(property="class", type="string", example="CNTT01"),
+     *                     @OA\Property(property="faculty", type="string", example="Công nghệ thông tin"),
+     *                     @OA\Property(property="course", type="string", example="2024"),
+     *                     @OA\Property(property="date_of_birth", type="string", example="2000-01-01T00:00:00.000000Z"),
+     *                     @OA\Property(property="gender", type="string", example="male"),
+     *                     @OA\Property(property="phone", type="string", example="0123456789")
+     *                 ),
+     *                 @OA\Property(property="token", type="string", example="1|abc123...")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation failed"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
      */
     public function register(Request $request): JsonResponse
     {
@@ -98,7 +176,54 @@ class AuthController extends Controller
     }
 
     /**
-     * Login student
+     * @OA\Post(
+     *     path="/auth/login",
+     *     summary="Đăng nhập sinh viên",
+     *     description="Đăng nhập với email và mật khẩu để nhận token",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="student@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Đăng nhập thành công",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Đăng nhập thành công"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="user", type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="full_name", type="string", example="Nguyễn Văn A"),
+     *                     @OA\Property(property="email", type="string", example="student@example.com"),
+     *                     @OA\Property(property="role", type="string", example="student")
+     *                 ),
+     *                 @OA\Property(property="student", type="object",
+     *                     @OA\Property(property="student_id", type="string", example="SV001"),
+     *                     @OA\Property(property="class", type="string", example="CNTT01"),
+     *                     @OA\Property(property="faculty", type="string", example="Công nghệ thông tin"),
+     *                     @OA\Property(property="course", type="string", example="2024"),
+     *                     @OA\Property(property="date_of_birth", type="string", example="2000-01-01T00:00:00.000000Z"),
+     *                     @OA\Property(property="gender", type="string", example="male"),
+     *                     @OA\Property(property="phone", type="string", example="0123456789")
+     *                 ),
+     *                 @OA\Property(property="token", type="string", example="2|abc123...")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Email hoặc mật khẩu không đúng",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Email hoặc mật khẩu không đúng")
+     *         )
+     *     )
+     * )
      */
     public function login(Request $request): JsonResponse
     {
@@ -167,7 +292,28 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout student
+     * @OA\Post(
+     *     path="/auth/logout",
+     *     summary="Đăng xuất sinh viên",
+     *     description="Đăng xuất và thu hồi token hiện tại",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Đăng xuất thành công",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Đăng xuất thành công")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function logout(Request $request): JsonResponse
     {
@@ -190,7 +336,46 @@ class AuthController extends Controller
     }
 
     /**
-     * Get current user profile
+     * @OA\Get(
+     *     path="/auth/profile",
+     *     summary="Lấy thông tin profile",
+     *     description="Lấy thông tin profile của sinh viên hiện tại",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Thông tin profile",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="user", type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="full_name", type="string", example="Nguyễn Văn A"),
+     *                     @OA\Property(property="email", type="string", example="student@example.com"),
+     *                     @OA\Property(property="role", type="string", example="student"),
+     *                     @OA\Property(property="created_at", type="string", example="2025-09-20T02:02:33.000000Z")
+     *                 ),
+     *                 @OA\Property(property="student", type="object",
+     *                     @OA\Property(property="student_id", type="string", example="SV001"),
+     *                     @OA\Property(property="class", type="string", example="CNTT01"),
+     *                     @OA\Property(property="faculty", type="string", example="Công nghệ thông tin"),
+     *                     @OA\Property(property="course", type="string", example="2024"),
+     *                     @OA\Property(property="date_of_birth", type="string", example="2000-01-01T00:00:00.000000Z"),
+     *                     @OA\Property(property="gender", type="string", example="male"),
+     *                     @OA\Property(property="phone", type="string", example="0123456789"),
+     *                     @OA\Property(property="created_at", type="string", example="2025-09-20T02:02:33.000000Z")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     )
+     * )
      */
     public function profile(Request $request): JsonResponse
     {
@@ -222,7 +407,44 @@ class AuthController extends Controller
     }
 
     /**
-     * Update user profile
+     * @OA\Put(
+     *     path="/auth/profile",
+     *     summary="Cập nhật thông tin profile",
+     *     description="Cập nhật thông tin profile của sinh viên",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="full_name", type="string", example="Nguyễn Văn A Updated"),
+     *             @OA\Property(property="phone", type="string", example="0987654321"),
+     *             @OA\Property(property="class", type="string", example="CNTT02"),
+     *             @OA\Property(property="faculty", type="string", example="Công nghệ thông tin"),
+     *             @OA\Property(property="course", type="string", example="2024")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Cập nhật thành công",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Cập nhật thông tin thành công"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="user", type="object"),
+     *                 @OA\Property(property="student", type="object")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation failed"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
      */
     public function updateProfile(Request $request): JsonResponse
     {
@@ -293,7 +515,47 @@ class AuthController extends Controller
     }
 
     /**
-     * Change password
+     * @OA\Post(
+     *     path="/auth/change-password",
+     *     summary="Đổi mật khẩu",
+     *     description="Đổi mật khẩu của sinh viên",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"current_password","new_password","new_password_confirmation"},
+     *             @OA\Property(property="current_password", type="string", format="password", example="oldpassword123"),
+     *             @OA\Property(property="new_password", type="string", format="password", example="newpassword123"),
+     *             @OA\Property(property="new_password_confirmation", type="string", format="password", example="newpassword123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Đổi mật khẩu thành công",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Đổi mật khẩu thành công. Vui lòng đăng nhập lại.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Mật khẩu hiện tại không đúng",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Mật khẩu hiện tại không đúng")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation failed"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
      */
     public function changePassword(Request $request): JsonResponse
     {

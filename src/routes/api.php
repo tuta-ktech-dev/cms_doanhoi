@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\StudentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,20 +30,24 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('profile', [AuthController::class, 'updateProfile']);
         Route::post('change-password', [AuthController::class, 'changePassword']);
     });
-
-    // Student routes
-    Route::prefix('student')->group(function () {
-        Route::get('events', [StudentController::class, 'getEvents']);
-        Route::get('events/{event}', [StudentController::class, 'getEvent']);
-        Route::post('events/{event}/register', [StudentController::class, 'registerEvent']);
-        Route::delete('events/{event}/unregister', [StudentController::class, 'unregisterEvent']);
-        Route::get('registrations', [StudentController::class, 'getRegistrations']);
-        Route::get('attendance', [StudentController::class, 'getAttendance']);
-        Route::get('statistics', [StudentController::class, 'getStatistics']);
-    });
 });
 
-// Test route
+/**
+ * @OA\Get(
+ *     path="/test",
+ *     summary="Test API endpoint",
+ *     description="Kiểm tra API có hoạt động không",
+ *     tags={"Test"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="API hoạt động bình thường",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="API is working!"),
+ *             @OA\Property(property="timestamp", type="string", example="2025-09-20T02:02:21.524428Z")
+ *         )
+ *     )
+ * )
+ */
 Route::get('/test', function () {
     return response()->json([
         'message' => 'API is working!',
