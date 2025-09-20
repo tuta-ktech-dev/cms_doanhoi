@@ -10,9 +10,12 @@ class EventAnalyticsWidget extends ChartWidget
 {
     public ?Event $record = null;
 
-    protected static ?string $heading = 'Phân tích sự kiện';
-
     protected static ?int $sort = 2;
+
+    public function getHeading(): string
+    {
+        return 'Phân tích sự kiện';
+    }
 
     protected function getData(): array
     {

@@ -10,9 +10,12 @@ class EventTimelineWidget extends ChartWidget
 {
     public ?Event $record = null;
 
-    protected static ?string $heading = 'Timeline đăng ký và điểm danh';
-
     protected static ?int $sort = 3;
+
+    public function getHeading(): string
+    {
+        return 'Timeline đăng ký và điểm danh';
+    }
 
     protected function getData(): array
     {
