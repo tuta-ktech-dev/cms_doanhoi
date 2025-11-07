@@ -50,6 +50,12 @@ class EventsTable
                     ->numeric()
                     ->sortable(),
                 
+                TextColumn::make('budget')
+                    ->label('Kinh phí')
+                    ->money('VND')
+                    ->sortable()
+                    ->toggleable(),
+                
                 IconColumn::make('is_registration_open')
                     ->label('Mở đăng ký')
                     ->boolean()

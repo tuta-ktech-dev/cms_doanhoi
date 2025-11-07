@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StudentController;
+use App\Http\Controllers\Api\QRCodeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('registrations', [StudentController::class, 'getRegistrations']);
         Route::get('attendance', [StudentController::class, 'getAttendance']);
         Route::get('statistics', [StudentController::class, 'getStatistics']);
+        Route::post('scan-qr', [QRCodeController::class, 'scanQR']);
+    });
+
+    // QR Code routes (for UNION_MANAGER and ADMIN)
+    Route::prefix('events')->group(function () {
+        Route::get('{id}/qr-code', [QRCodeController::class, 'generateQR']);
     });
 });
 

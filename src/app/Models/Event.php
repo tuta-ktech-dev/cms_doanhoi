@@ -18,6 +18,7 @@ class Event extends Model
         'location',
         'max_participants',
         'activity_points',
+        'budget',
         'status',
         'is_registration_open',
         'registration_deadline',
@@ -28,6 +29,7 @@ class Event extends Model
         'end_date' => 'datetime',
         'registration_deadline' => 'datetime',
         'activity_points' => 'decimal:2',
+        'budget' => 'decimal:2',
         'is_registration_open' => 'boolean',
     ];
 

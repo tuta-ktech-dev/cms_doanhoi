@@ -98,6 +98,14 @@ class EventForm
                     ->minValue(0)
                     ->default(0),
                 
+                TextInput::make('budget')
+                    ->label('Kinh phí tổ chức')
+                    ->numeric()
+                    ->step(0.01)
+                    ->minValue(0)
+                    ->prefix('₫')
+                    ->placeholder('Nhập kinh phí (VND)'),
+                
                 Select::make('status')
                     ->label('Trạng thái')
                     ->options([

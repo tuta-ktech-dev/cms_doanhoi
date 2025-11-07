@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Events;
 use App\Enums\PermissionEnum;
 use App\Filament\Resources\Events\Pages\CreateEvent;
 use App\Filament\Resources\Events\Pages\EditEvent;
+use App\Filament\Resources\Events\Pages\EventQRCode;
 use App\Filament\Resources\Events\Pages\ListEvents;
 use App\Filament\Resources\Events\Pages\ViewEvent;
 use App\Filament\Resources\Events\RelationManagers\EventAttendanceRelationManager;
@@ -24,13 +25,13 @@ class EventResource extends Resource
     protected static ?string $model = Event::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
-    
+
     protected static ?string $navigationLabel = 'Sự kiện';
-    
+
     protected static ?string $modelLabel = 'Sự kiện';
-    
+
     protected static ?string $pluralModelLabel = 'Sự kiện';
-    
+
     public static function getNavigationGroup(): ?string
     {
         return 'Quản lý sự kiện';
@@ -67,6 +68,7 @@ class EventResource extends Resource
             'create' => CreateEvent::route('/create'),
             'view' => ViewEvent::route('/{record}'),
             'edit' => EditEvent::route('/{record}/edit'),
+            'qr-code' => EventQRCode::route('/{record}/qr-code'),
         ];
     }
 
