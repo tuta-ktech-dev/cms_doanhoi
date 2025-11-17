@@ -21,7 +21,7 @@ class EventRegistrationsTable
         return $table
             ->columns([
                 TextColumn::make('user.full_name')
-                    ->label('Avatar')
+                    ->label('Ảnh đại diện')
                     ->formatStateUsing(function ($state) {
                         $initials = '';
                         $words = explode(' ', $state);

@@ -16,23 +16,29 @@ class UserForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Tên đăng nhập')
                     ->required(),
                 TextInput::make('email')
-                    ->label('Email address')
+                    ->label('Địa chỉ email')
                     ->email()
                     ->required(),
                 TextInput::make('full_name')
+                    ->label('Họ và tên')
                     ->default(null),
-                DateTimePicker::make('email_verified_at'),
+                DateTimePicker::make('email_verified_at')
+                    ->label('Xác thực email lúc'),
                 TextInput::make('password')
+                    ->label('Mật khẩu')
                     ->password()
                     ->required(fn ($livewire) => $livewire instanceof CreateUser)
                     ->dehydrated(fn ($state) => filled($state))
                     ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null),
                 TextInput::make('phone')
+                    ->label('Số điện thoại')
                     ->tel()
                     ->default(null),
                 FileUpload::make('avatar')
+                    ->label('Ảnh đại diện')
                     ->image()
                     ->imageEditor()
                     ->directory('avatars')
@@ -40,14 +46,25 @@ class UserForm
                     ->maxSize(2048) // 2MB
                     ->circleCropper(),
                 Select::make('role')
-                    ->options(['admin' => 'Admin', 'union_manager' => 'Union manager', 'student' => 'Student'])
+                    ->label('Vai trò')
+                    ->options([
+                        'admin' => 'Quản trị',
+                        'union_manager' => 'Quản lý đoàn hội',
+                        'student' => 'Sinh viên',
+                    ])
                     ->default('student')
                     ->required(),
                 Select::make('status')
-                    ->options(['active' => 'Active', 'inactive' => 'Inactive', 'banned' => 'Banned'])
+                    ->label('Trạng thái')
+                    ->options([
+                        'active' => 'Hoạt động',
+                        'inactive' => 'Tạm ngưng',
+                        'banned' => 'Đã khóa',
+                    ])
                     ->default('active')
                     ->required(),
-                DateTimePicker::make('last_login'),
+                DateTimePicker::make('last_login')
+                    ->label('Đăng nhập gần nhất'),
             ]);
     }
 }

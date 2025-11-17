@@ -69,7 +69,8 @@ class ManagersRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->label('Thêm quản lý'),
                 AssociateAction::make(),
             ])
             ->recordActions([

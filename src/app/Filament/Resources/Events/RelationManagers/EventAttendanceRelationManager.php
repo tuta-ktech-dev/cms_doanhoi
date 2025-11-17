@@ -68,7 +68,7 @@ class EventAttendanceRelationManager extends RelationManager
             ->recordTitleAttribute('user.full_name')
             ->columns([
                 TextColumn::make('user.full_name')
-                    ->label('Avatar')
+                    ->label('Ảnh đại diện')
                     ->formatStateUsing(function ($state) {
                         $initials = '';
                         $words = explode(' ', $state);
@@ -143,6 +143,7 @@ class EventAttendanceRelationManager extends RelationManager
             ])
             ->headerActions([
                 \Filament\Actions\CreateAction::make()
+                    ->label('Thêm điểm danh')
                     ->label('Thêm điểm danh')
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['registered_by'] = auth()->id();

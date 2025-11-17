@@ -13,7 +13,9 @@ class ListEventRegistrations extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->label('Thêm đăng ký')
+                ->visible(false),
         ];
     }
 

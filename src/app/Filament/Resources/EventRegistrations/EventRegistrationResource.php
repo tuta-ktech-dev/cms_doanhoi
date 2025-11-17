@@ -21,6 +21,12 @@ class EventRegistrationResource extends Resource
     protected static ?string $model = EventRegistration::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
+
+    protected static ?string $navigationLabel = 'Đăng ký sự kiện';
+
+    protected static ?string $modelLabel = 'Đăng ký sự kiện';
+
+    protected static ?string $pluralModelLabel = 'Đăng ký sự kiện';
     
     public static function getNavigationGroup(): ?string
     {

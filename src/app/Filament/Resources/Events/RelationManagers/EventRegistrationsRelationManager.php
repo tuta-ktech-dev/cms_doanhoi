@@ -50,7 +50,7 @@ class EventRegistrationsRelationManager extends RelationManager
             ->recordTitleAttribute('user.full_name')
             ->columns([
                 TextColumn::make('user.full_name')
-                    ->label('Avatar')
+                    ->label('Ảnh đại diện')
                     ->formatStateUsing(function ($state) {
                         $initials = '';
                         $words = explode(' ', $state);
