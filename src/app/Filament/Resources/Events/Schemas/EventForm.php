@@ -32,12 +32,12 @@ class EventForm
                     })
                     ->required()
                     ->searchable(),
-                
+
                 TextInput::make('title')
                     ->label('Tiêu đề')
                     ->required()
                     ->maxLength(255),
-                
+
                 TextInput::make('description')
                     ->label('Mô tả ngắn')
                     ->maxLength(500),
@@ -51,7 +51,7 @@ class EventForm
                     ->maxSize(2048) // 2MB
                     ->imageResizeMode('cover')
                     ->imageCropAspectRatio('16:9'),
-                
+
                 RichEditor::make('content')
                     ->label('Nội dung chi tiết')
                     ->toolbarButtons([
@@ -68,36 +68,36 @@ class EventForm
                     ])
                     ->columnSpanFull()
                     ->extraInputAttributes(['style' => 'min-height: 40rem; max-height: 50vh; overflow-y: auto;']),
-                
 
-                
+
+
                 DateTimePicker::make('start_date')
                     ->label('Ngày bắt đầu')
                     ->required()
                     ->native(false),
-                
+
                 DateTimePicker::make('end_date')
                     ->label('Ngày kết thúc')
                     ->required()
                     ->native(false)
                     ->after('start_date'),
-                
+
                 TextInput::make('location')
                     ->label('Địa điểm')
                     ->maxLength(255),
-                
+
                 TextInput::make('max_participants')
                     ->label('Số lượng tối đa')
                     ->numeric()
                     ->minValue(1),
-                
+
                 TextInput::make('activity_points')
                     ->label('Điểm rèn luyện')
                     ->numeric()
                     ->step(0.1)
                     ->minValue(0)
                     ->default(0),
-                
+
                 TextInput::make('budget')
                     ->label('Kinh phí tổ chức')
                     ->numeric()
@@ -105,7 +105,7 @@ class EventForm
                     ->minValue(0)
                     ->prefix('₫')
                     ->placeholder('Nhập kinh phí (VND)'),
-                
+
                 Select::make('status')
                     ->label('Trạng thái')
                     ->options([
@@ -115,15 +115,14 @@ class EventForm
                     ])
                     ->default('draft')
                     ->required(),
-                
+
                 Toggle::make('is_registration_open')
                     ->label('Mở đăng ký')
                     ->default(true),
-                
+
                 DateTimePicker::make('registration_deadline')
                     ->label('Hạn đăng ký')
-                    ->native(false)
-                    ->after('start_date'),
+                    ->native(false),
             ]);
     }
 }
