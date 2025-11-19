@@ -98,7 +98,7 @@ class StudentStatsWidget extends BaseWidget
             Stat::make('Điểm TB từ SK', round($avgActivityPoints, 1) . ' điểm')
                 ->description('Điểm rèn luyện TB từ sự kiện')
                 ->descriptionIcon('heroicon-m-star')
-                ->color('amber'),
+                ->color('blue'),
 
             Stat::make('Điểm cao từ SK', number_format($highActivityStudents))
                 ->description('SV có điểm ≥ 80 từ sự kiện')

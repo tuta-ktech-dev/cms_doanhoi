@@ -75,7 +75,7 @@ class StudentDetailStatsWidget extends BaseWidget
             Stat::make('Điểm từ SK', $totalActivityPoints . ' điểm')
                 ->description('Tổng điểm từ sự kiện đã tham gia')
                 ->descriptionIcon('heroicon-m-star')
-                ->color('amber'),
+                ->color('blue'),
 
             // Thống kê đăng ký
             Stat::make('Tổng đăng ký', number_format($totalRegistrations))

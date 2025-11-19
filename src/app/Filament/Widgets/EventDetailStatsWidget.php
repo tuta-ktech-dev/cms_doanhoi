@@ -127,7 +127,7 @@ class EventDetailStatsWidget extends BaseWidget
             Stat::make('Điểm rèn luyện', ($event->activity_points ?? 0) . ' điểm')
                 ->description('Điểm cho sự kiện này')
                 ->descriptionIcon('heroicon-m-star')
-                ->color('amber'),
+                ->color('blue'),
         ];
     }
 }

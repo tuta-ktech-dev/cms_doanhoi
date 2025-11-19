@@ -85,7 +85,7 @@ class UnionDetailStatsWidget extends BaseWidget
             Stat::make('Điểm TB/SK', $avgActivityPoints . ' điểm')
                 ->description('Điểm trung bình mỗi sự kiện')
                 ->descriptionIcon('heroicon-m-star')
-                ->color('amber'),
+                ->color('blue'),
 
             // Thống kê sự kiện
             Stat::make('Tổng sự kiện', number_format($totalEvents))
