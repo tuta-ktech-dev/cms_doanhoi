@@ -52,6 +52,7 @@ class ManagersRelationManager extends RelationManager
             ->columns([
                 ImageColumn::make('user.avatar')
                     ->label('Ảnh đại diện')
+                    ->disk('public')
                     ->circular()
                     ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->user->name ?? 'Unknown'))
                     ->size(40),

@@ -22,6 +22,7 @@ class UnionForm
                 FileUpload::make('logo')
                     ->image()
                     ->imageEditor()
+                    ->disk('public')
                     ->directory('logos')
                     ->visibility('public')
                     ->maxSize(2048) // 2MB

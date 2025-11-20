@@ -41,6 +41,7 @@ class UserForm
                     ->label('Ảnh đại diện')
                     ->image()
                     ->imageEditor()
+                    ->disk('public')
                     ->directory('avatars')
                     ->visibility('public')
                     ->maxSize(2048) // 2MB

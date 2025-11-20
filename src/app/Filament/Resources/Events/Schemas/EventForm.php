@@ -46,6 +46,7 @@ class EventForm
                     ->label('Hình ảnh')
                     ->image()
                     ->imageEditor()
+                    ->disk('public')
                     ->directory('events')
                     ->visibility('public')
                     ->maxSize(2048) // 2MB

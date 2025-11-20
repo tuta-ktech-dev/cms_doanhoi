@@ -43,6 +43,7 @@ class UsersTable
                     ->searchable(),
                 ImageColumn::make('avatar')
                     ->label('Ảnh đại diện')
+                    ->disk('public')
                     ->circular()
                     ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name))
                     ->size(40),

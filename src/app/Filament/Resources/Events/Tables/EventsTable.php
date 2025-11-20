@@ -16,65 +16,66 @@ class EventsTable
             ->columns([
                 ImageColumn::make('image')
                     ->label('Hình ảnh')
+                    ->disk('public')
                     ->height(60)
                     ->defaultImageUrl('https://placehold.co/800x400/edeff5/4a5568?text=Event'),
-                
+
                 TextColumn::make('title')
                     ->label('Tiêu đề')
                     ->searchable()
                     ->sortable()
                     ->limit(50),
-                
+
                 TextColumn::make('union.name')
                     ->label('Đoàn hội')
                     ->searchable()
                     ->sortable(),
-                
+
                 TextColumn::make('start_date')
                     ->label('Ngày bắt đầu')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
-                
+
                 TextColumn::make('location')
                     ->label('Địa điểm')
                     ->limit(30)
                     ->toggleable(),
-                
+
                 TextColumn::make('max_participants')
                     ->label('Số lượng tối đa')
                     ->numeric()
                     ->toggleable(),
-                
+
                 TextColumn::make('activity_points')
                     ->label('Điểm rèn luyện')
                     ->numeric()
                     ->sortable(),
-                
+
                 TextColumn::make('budget')
                     ->label('Kinh phí')
                     ->money('VND')
                     ->sortable()
                     ->toggleable(),
-                
+
                 IconColumn::make('is_registration_open')
                     ->label('Mở đăng ký')
                     ->boolean()
                     ->toggleable(),
-                
+
                 TextColumn::make('status')
                     ->label('Trạng thái')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'draft' => 'gray',
                         'published' => 'success',
                         'cancelled' => 'danger',
                     })
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
                         'draft' => 'Bản nháp',
                         'published' => 'Đã xuất bản',
                         'cancelled' => 'Đã hủy',
                     }),
-                
+
                 TextColumn::make('created_at')
                     ->label('Ngày tạo')
                     ->dateTime('d/m/Y H:i')
@@ -89,7 +90,7 @@ class EventsTable
                         'published' => 'Đã xuất bản',
                         'cancelled' => 'Đã hủy',
                     ]),
-                
+
                 SelectFilter::make('is_registration_open')
                     ->label('Mở đăng ký')
                     ->options([
@@ -101,7 +102,7 @@ class EventsTable
                 \Filament\Actions\ActionGroup::make([
                     \Filament\Actions\ViewAction::make()
                         ->label('Xem chi tiết'),
-                    
+
                     \Filament\Actions\EditAction::make()
                         ->label('Chỉnh sửa'),
                 ])
