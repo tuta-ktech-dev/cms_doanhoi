@@ -187,6 +187,54 @@ class EventRegistrationsRelationManager extends RelationManager
             ])
             ->bulkActions([
                 \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\BulkAction::make('approve')
+                        ->label('Duyệt đã chọn')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading('Duyệt hàng loạt')
+                        ->modalDescription(fn ($records) => 'Bạn có chắc chắn muốn duyệt ' . $records->count() . ' đăng ký đã chọn?')
+                        ->action(function ($records) {
+                            $count = $records->count();
+                            $records->each(function ($record) {
+                                $record->update([
+                                    'status' => 'approved',
+                                    'approved_at' => now(),
+                                    'approved_by' => auth()->id(),
+                                ]);
+                            });
+                            
+                            \Filament\Notifications\Notification::make()
+                                ->title('Đã duyệt ' . $count . ' đăng ký')
+                                ->success()
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
+
+                    \Filament\Actions\BulkAction::make('reject')
+                        ->label('Từ chối đã chọn')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading('Từ chối hàng loạt')
+                        ->modalDescription(fn ($records) => 'Bạn có chắc chắn muốn từ chối ' . $records->count() . ' đăng ký đã chọn?')
+                        ->action(function ($records) {
+                            $count = $records->count();
+                            $records->each(function ($record) {
+                                $record->update([
+                                    'status' => 'rejected',
+                                    'approved_at' => now(),
+                                    'approved_by' => auth()->id(),
+                                ]);
+                            });
+                            
+                            \Filament\Notifications\Notification::make()
+                                ->title('Đã từ chối ' . $count . ' đăng ký')
+                                ->warning()
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
+
                     \Filament\Actions\DeleteBulkAction::make(),
                 ]),
             ])
