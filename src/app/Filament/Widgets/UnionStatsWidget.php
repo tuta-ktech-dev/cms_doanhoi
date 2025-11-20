@@ -12,11 +12,13 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class UnionStatsWidget extends BaseWidget
 {
+    protected ?string $heading = 'Thống kê Đoàn Hội';
+
     protected function getStats(): array
     {
         // Tổng số đoàn hội
         $totalUnions = Union::count();
-        
+
         // Thống kê sự kiện theo đoàn hội
         $totalEvents = Event::count();
         $completedEvents = Event::where('end_date', '<', now())->count();
@@ -100,7 +102,7 @@ class UnionStatsWidget extends BaseWidget
                 ->description($activeStudentRate . '% tỷ lệ hoạt động')
                 ->descriptionIcon('heroicon-m-academic-cap')
                 ->color('purple'),
-                
+
             Stat::make('Điểm TB/SK', $avgActivityPoints . ' điểm')
                 ->description('Điểm trung bình mỗi sự kiện')
                 ->descriptionIcon('heroicon-m-star')

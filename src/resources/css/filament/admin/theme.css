@@ -1,0 +1,31 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+.fi-topbar {
+    background: blue;
+}
+
+.fi-topbar-start {
+    margin-inline-start: auto;
+}
+
+.fi-logo {
+    color: white;
+}
+
+.fi-topbar-end {
+    margin-inline-end: unset !important;
+}
+
+/* Widget heading styles */
+.fi-wi-heading {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+}
+
+.fi-section-header-heading {
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+}

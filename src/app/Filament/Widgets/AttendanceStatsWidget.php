@@ -8,25 +8,29 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class AttendanceStatsWidget extends BaseWidget
 {
+    protected static ?int $sort = 2;
+
+    protected ?string $heading = 'Thống kê Điểm danh';
+
     protected function getStats(): array
     {
         $user = auth()->user();
-        
+
         // Lấy query base dựa trên quyền hạn
         $query = EventAttendance::query();
-        
+
         if ($user->isUnionManager()) {
             $userUnionIds = $user->unionManager->pluck('union_id')->toArray();
             $query->whereHas('event', function ($q) use ($userUnionIds) {
                 $q->whereIn('union_id', $userUnionIds);
             });
         }
-        
+
         $totalAttendance = $query->count();
         $presentCount = (clone $query)->where('status', 'present')->count();
         $absentCount = (clone $query)->where('status', 'absent')->count();
         $lateCount = (clone $query)->where('status', 'late')->count();
-        
+
         $attendanceRate = $totalAttendance > 0 ? round(($presentCount / $totalAttendance) * 100, 1) : 0;
 
         return [

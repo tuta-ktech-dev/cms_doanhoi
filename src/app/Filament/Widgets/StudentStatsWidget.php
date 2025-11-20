@@ -10,28 +10,30 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StudentStatsWidget extends BaseWidget
 {
+    protected ?string $heading = 'Thống kê Sinh viên';
+
     protected function getStats(): array
     {
         // Tổng số sinh viên
         $totalStudents = Student::count();
-        
+
         // Sinh viên theo giới tính
         $maleStudents = Student::where('gender', 'male')->count();
         $femaleStudents = Student::where('gender', 'female')->count();
-        
+
         // Sinh viên theo khoa
         $facultyStats = Student::selectRaw('faculty, COUNT(*) as count')
             ->groupBy('faculty')
             ->orderByDesc('count')
             ->get();
-        
+
         $topFaculty = $facultyStats->first();
         $topFacultyName = $topFaculty ? $topFaculty->faculty . ' (' . $topFaculty->count . ' SV)' : 'N/A';
-        
+
         // Sinh viên có hoạt động
         $activeStudents = Student::whereHas('eventAttendances')->count();
         $activeRate = $totalStudents > 0 ? round(($activeStudents / $totalStudents) * 100, 1) : 0;
-        
+
         // Thống kê điểm rèn luyện từ sự kiện
         $studentsWithActivityPoints = Student::with('eventAttendances.event')
             ->whereHas('eventAttendances', function ($query) {
@@ -47,8 +49,8 @@ class StudentStatsWidget extends BaseWidget
                 });
         });
 
-        $avgActivityPoints = $studentsWithActivityPoints->count() > 0 
-            ? $totalActivityPoints / $studentsWithActivityPoints->count() 
+        $avgActivityPoints = $studentsWithActivityPoints->count() > 0
+            ? $totalActivityPoints / $studentsWithActivityPoints->count()
             : 0;
 
         $highActivityStudents = $studentsWithActivityPoints->filter(function ($student) {
@@ -59,11 +61,11 @@ class StudentStatsWidget extends BaseWidget
                 });
             return $studentPoints >= 80;
         })->count();
-        
+
         // Thống kê sự kiện
         $totalEvents = Event::count();
         $completedEvents = Event::where('end_date', '<', now())->count();
-        
+
         // Thống kê tổng quan
         $totalAttendance = EventAttendance::count();
         $totalPresent = EventAttendance::where('status', 'present')->count();

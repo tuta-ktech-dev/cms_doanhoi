@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\DB;
 
 class EventStatsWidget extends BaseWidget
 {
+    protected ?string $heading = 'Thống kê Sự kiện';
+
     protected function getStats(): array
     {
         $user = auth()->user();
-        
+
         // Base query với quyền hạn
         $baseQuery = Event::query();
         if ($user->isUnionManager()) {
@@ -22,16 +24,16 @@ class EventStatsWidget extends BaseWidget
 
         // Tổng số sự kiện
         $totalEvents = $baseQuery->count();
-        
+
         // Sự kiện đã kết thúc
         $completedEvents = (clone $baseQuery)->where('end_date', '<', now())->count();
-        
+
         // Sự kiện đang diễn ra
         $ongoingEvents = (clone $baseQuery)
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())
             ->count();
-        
+
         // Sự kiện sắp diễn ra
         $upcomingEvents = (clone $baseQuery)->where('start_date', '>', now())->count();
 

@@ -10,15 +10,17 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class DashboardAttendanceWidget extends BaseWidget
 {
+    protected ?string $heading = 'Tổng quan Dashboard';
+
     protected function getStats(): array
     {
         $user = auth()->user();
-        
+
         // Lấy query base dựa trên quyền hạn
         $eventQuery = Event::query();
         $attendanceQuery = EventAttendance::query();
         $registrationQuery = EventRegistration::query();
-        
+
         if ($user->isUnionManager()) {
             $userUnionIds = $user->unionManager->pluck('union_id')->toArray();
             $eventQuery->whereIn('union_id', $userUnionIds);
@@ -29,11 +31,11 @@ class DashboardAttendanceWidget extends BaseWidget
                 $q->whereIn('union_id', $userUnionIds);
             });
         }
-        
+
         $totalEvents = $eventQuery->count();
         $totalAttendance = $attendanceQuery->count();
         $totalRegistrations = $registrationQuery->where('status', 'approved')->count();
-        
+
         $presentCount = (clone $attendanceQuery)->where('status', 'present')->count();
         $attendanceRate = $totalAttendance > 0 ? round(($presentCount / $totalAttendance) * 100, 1) : 0;
 

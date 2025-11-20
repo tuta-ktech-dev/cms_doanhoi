@@ -19,8 +19,6 @@ class ViewStudent extends ViewRecord
 
     protected function getHeaderWidgets(): array
     {
-        return [
-            \App\Filament\Widgets\StudentDetailStatsWidget::class,
-        ];
+        return [];
     }
 }
