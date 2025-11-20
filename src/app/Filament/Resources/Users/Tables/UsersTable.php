@@ -24,10 +24,6 @@ class UsersTable
                 TextColumn::make('full_name')
                     ->label('Họ và tên')
                     ->searchable(),
-                TextColumn::make('email_verified_at')
-                    ->label('Xác thực email lúc')
-                    ->dateTime()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Tạo lúc')
                     ->dateTime()
@@ -65,10 +61,6 @@ class UsersTable
                         'banned' => 'Đã khóa',
                         default => $state,
                     }),
-                TextColumn::make('last_login')
-                    ->label('Đăng nhập gần nhất')
-                    ->dateTime()
-                    ->sortable(),
             ])
             ->filters([
                 //

@@ -25,8 +25,6 @@ class UserForm
                 TextInput::make('full_name')
                     ->label('Họ và tên')
                     ->default(null),
-                DateTimePicker::make('email_verified_at')
-                    ->label('Xác thực email lúc'),
                 TextInput::make('password')
                     ->label('Mật khẩu')
                     ->password()
@@ -64,8 +62,6 @@ class UserForm
                     ])
                     ->default('active')
                     ->required(),
-                DateTimePicker::make('last_login')
-                    ->label('Đăng nhập gần nhất'),
             ]);
     }
 }
