@@ -265,9 +265,136 @@ curl -X GET "http://localhost:8000/api/unions?status=active" \
   -H "Authorization: Bearer {token}"
 ```
 
+### 🔔 Notification Endpoints
+
+#### 8. Lấy danh sách thông báo
+```http
+GET /api/student/notifications
+Authorization: Bearer {token}
+```
+
+**Query Parameters:**
+- `type` (optional): Lọc theo loại thông báo (`registration_success`, `unregistration_success`, `attendance_success`)
+- `read` (optional): Lọc theo trạng thái đọc (`true` hoặc `false`)
+- `page` (optional): Số trang (mặc định: 1)
+- `per_page` (optional): Số item mỗi trang (mặc định: 15)
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "data": {
+    "notifications": [
+      {
+        "id": 1,
+        "type": "registration_success",
+        "title": "Đăng ký thành công",
+        "message": "Bạn đã đăng ký thành công sự kiện: Hội thảo Công nghệ",
+        "data": {
+          "event_id": 1,
+          "event_title": "Hội thảo Công nghệ",
+          "event_start_date": "2025-12-01 09:00:00",
+          "event_location": "Hội trường A"
+        },
+        "is_read": false,
+        "read_at": null,
+        "created_at": "2025-11-21T10:30:00.000000Z"
+      },
+      {
+        "id": 2,
+        "type": "attendance_success",
+        "title": "Điểm danh thành công",
+        "message": "Bạn đã điểm danh thành công sự kiện: Hội thảo Công nghệ. Bạn nhận được 5 điểm hoạt động.",
+        "data": {
+          "event_id": 1,
+          "event_title": "Hội thảo Công nghệ",
+          "activity_points": 5
+        },
+        "is_read": true,
+        "read_at": "2025-11-21T11:00:00.000000Z",
+        "created_at": "2025-11-21T10:45:00.000000Z"
+      }
+    ],
+    "pagination": {
+      "current_page": 1,
+      "last_page": 3,
+      "per_page": 15,
+      "total": 42
+    },
+    "unread_count": 5
+  }
+}
+```
+
+**Example Request:**
+```bash
+# Lấy tất cả thông báo
+curl -X GET "http://localhost:8000/api/student/notifications" \
+  -H "Authorization: Bearer {token}"
+
+# Lấy thông báo chưa đọc
+curl -X GET "http://localhost:8000/api/student/notifications?read=false" \
+  -H "Authorization: Bearer {token}"
+
+# Lấy thông báo đăng ký thành công
+curl -X GET "http://localhost:8000/api/student/notifications?type=registration_success" \
+  -H "Authorization: Bearer {token}"
+```
+
+#### 9. Đánh dấu thông báo đã đọc
+```http
+PUT /api/student/notifications/{id}/read
+Authorization: Bearer {token}
+```
+
+**Path Parameters:**
+- `id`: ID của thông báo
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Đã đánh dấu đọc"
+}
+```
+
+**Example Request:**
+```bash
+curl -X PUT "http://localhost:8000/api/student/notifications/1/read" \
+  -H "Authorization: Bearer {token}"
+```
+
+#### 10. Đánh dấu tất cả thông báo đã đọc
+```http
+PUT /api/student/notifications/read-all
+Authorization: Bearer {token}
+```
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Đã đánh dấu tất cả thông báo là đã đọc",
+  "data": {
+    "marked_count": 5
+  }
+}
+```
+
+**Example Request:**
+```bash
+curl -X PUT "http://localhost:8000/api/student/notifications/read-all" \
+  -H "Authorization: Bearer {token}"
+```
+
+**Lưu ý:** Thông báo sẽ tự động được tạo khi:
+- Đăng ký sự kiện thành công
+- Hủy đăng ký sự kiện thành công
+- Điểm danh sự kiện thành công
+
 ### 🧪 Test Endpoints
 
-#### 8. Test API
+#### 11. Test API
 ```http
 GET /api/test
 ```

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\NotificationController;
 use App\Models\Event;
 use App\Models\EventAttendance;
 use App\Models\EventRegistration;
@@ -248,6 +249,7 @@ class QRCodeController extends Controller
         }
 
         // Auto-add activity points if not already added
+        $activityPointsEarned = 0;
         if ($event->activity_points > 0) {
             $student = $user->student;
             if ($student) {
@@ -255,8 +257,12 @@ class QRCodeController extends Controller
                 $student->update([
                     'activity_points' => $currentPoints + $event->activity_points
                 ]);
+                $activityPointsEarned = $event->activity_points;
             }
         }
+
+        // Tạo thông báo điểm danh thành công
+        NotificationController::createAttendanceSuccessNotification($user, $event, $activityPointsEarned);
 
         return response()->json([
             'success' => true,
@@ -272,7 +278,7 @@ class QRCodeController extends Controller
                     'title' => $event->title,
                     'activity_points' => $event->activity_points,
                 ],
-                'activity_points_earned' => $event->activity_points,
+                'activity_points_earned' => $activityPointsEarned,
             ]
         ]);
     }

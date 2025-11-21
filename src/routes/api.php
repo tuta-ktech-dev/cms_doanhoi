@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\QRCodeController;
 use App\Http\Controllers\Api\UnionController;
+use App\Http\Controllers\Api\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('attendance', [StudentController::class, 'getAttendance']);
         Route::get('statistics', [StudentController::class, 'getStatistics']);
         Route::post('scan-qr', [QRCodeController::class, 'scanQR']);
+        
+        // Notification routes
+        Route::get('notifications', [NotificationController::class, 'index']);
+        Route::put('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::put('notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     });
 
     // QR Code routes (for UNION_MANAGER and ADMIN)

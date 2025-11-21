@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\NotificationController;
 use App\Models\Event;
 use App\Models\EventRegistration;
 use App\Models\EventAttendance;
@@ -320,6 +321,9 @@ class StudentController extends Controller
             'notes' => $request->notes,
         ]);
 
+        // Tạo thông báo đăng ký thành công
+        NotificationController::createRegistrationSuccessNotification($user, $event);
+
         return response()->json([
             'success' => true,
             'message' => 'Đăng ký thành công',
@@ -395,8 +399,14 @@ class StudentController extends Controller
             ], 400);
         }
 
+        // Lưu thông tin event trước khi xóa registration
+        $event = $registration->event;
+
         // Delete registration
         $registration->delete();
+
+        // Tạo thông báo hủy đăng ký thành công
+        NotificationController::createUnregistrationSuccessNotification($user, $event);
 
         return response()->json([
             'success' => true,

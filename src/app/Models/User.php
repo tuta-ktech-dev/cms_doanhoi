@@ -153,4 +153,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(EventComment::class);
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }
