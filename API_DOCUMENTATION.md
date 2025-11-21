@@ -220,9 +220,54 @@ Authorization: Bearer {token}
 }
 ```
 
+### 🏛️ Union Endpoints
+
+#### 7. Lấy danh sách đoàn hội
+```http
+GET /api/unions
+Authorization: Bearer {token}
+```
+
+**Query Parameters:**
+- `status` (optional): Lọc theo trạng thái đoàn hội (`active` hoặc `inactive`)
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Đoàn Thanh niên",
+      "description": "Đoàn Thanh niên Cộng sản Hồ Chí Minh",
+      "logo_url": "https://example.com/storage/logos/doan.png",
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "name": "Hội Sinh viên",
+      "description": "Hội Sinh viên Việt Nam",
+      "logo_url": "https://example.com/storage/logos/hsv.png",
+      "status": "active"
+    }
+  ]
+}
+```
+
+**Example Request:**
+```bash
+# Lấy tất cả đoàn hội
+curl -X GET "http://localhost:8000/api/unions" \
+  -H "Authorization: Bearer {token}"
+
+# Lấy chỉ đoàn hội đang hoạt động
+curl -X GET "http://localhost:8000/api/unions?status=active" \
+  -H "Authorization: Bearer {token}"
+```
+
 ### 🧪 Test Endpoints
 
-#### 7. Test API
+#### 8. Test API
 ```http
 GET /api/test
 ```

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\QRCodeController;
+use App\Http\Controllers\Api\UnionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('profile', [AuthController::class, 'updateProfile']);
         Route::post('change-password', [AuthController::class, 'changePassword']);
     });
+
+    // Union routes
+    Route::get('unions', [UnionController::class, 'index']);
 
     // Student routes
     Route::prefix('student')->group(function () {
