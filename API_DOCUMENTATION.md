@@ -313,6 +313,27 @@ Authorization: Bearer {token}
         "is_read": true,
         "read_at": "2025-11-21T11:00:00.000000Z",
         "created_at": "2025-11-21T10:45:00.000000Z"
+      },
+      {
+        "id": 3,
+        "type": "new_event",
+        "title": "Sự kiện mới",
+        "message": "Có sự kiện mới: Workshop Lập trình. Bắt đầu vào 25/11/2025 14:00",
+        "data": {
+          "event_id": 2,
+          "event_title": "Workshop Lập trình",
+          "event_description": "Workshop về lập trình web với Laravel",
+          "event_start_date": "2025-11-25 14:00:00",
+          "event_end_date": "2025-11-25 17:00:00",
+          "event_location": "Phòng Lab A",
+          "event_image_url": "https://example.com/storage/events/workshop.jpg",
+          "activity_points": 3,
+          "union_id": 1,
+          "union_name": "Đoàn Thanh niên"
+        },
+        "is_read": false,
+        "read_at": null,
+        "created_at": "2025-11-21T12:00:00.000000Z"
       }
     ],
     "pagination": {
@@ -338,6 +359,10 @@ curl -X GET "http://localhost:8000/api/student/notifications?read=false" \
 
 # Lấy thông báo đăng ký thành công
 curl -X GET "http://localhost:8000/api/student/notifications?type=registration_success" \
+  -H "Authorization: Bearer {token}"
+
+# Lấy thông báo sự kiện mới
+curl -X GET "http://localhost:8000/api/student/notifications?type=new_event" \
   -H "Authorization: Bearer {token}"
 ```
 
@@ -388,6 +413,7 @@ curl -X PUT "http://localhost:8000/api/student/notifications/read-all" \
 ```
 
 **Lưu ý:** Thông báo sẽ tự động được tạo khi:
+- Có sự kiện mới được publish (gửi cho tất cả sinh viên)
 - Đăng ký sự kiện thành công
 - Hủy đăng ký sự kiện thành công
 - Điểm danh sự kiện thành công

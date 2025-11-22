@@ -22,7 +22,7 @@ class NotificationController extends Controller
      *         in="query",
      *         description="Lọc theo loại thông báo",
      *         required=false,
-     *         @OA\Schema(type="string", enum={"registration_success", "unregistration_success", "attendance_success"})
+     *         @OA\Schema(type="string", enum={"registration_success", "unregistration_success", "attendance_success", "new_event"})
      *     ),
      *     @OA\Parameter(
      *         name="read",
@@ -266,6 +266,31 @@ class NotificationController extends Controller
                 'event_id' => $event->id,
                 'event_title' => $event->title,
                 'activity_points' => $activityPoints,
+            ],
+        ]);
+    }
+
+    /**
+     * Tạo thông báo sự kiện mới
+     */
+    public static function createNewEventNotification($user, $event): void
+    {
+        Notification::create([
+            'user_id' => $user->id,
+            'type' => 'new_event',
+            'title' => 'Sự kiện mới',
+            'message' => "Có sự kiện mới: {$event->title}. Bắt đầu vào {$event->start_date->format('d/m/Y H:i')}",
+            'data' => [
+                'event_id' => $event->id,
+                'event_title' => $event->title,
+                'event_description' => $event->description,
+                'event_start_date' => $event->start_date,
+                'event_end_date' => $event->end_date,
+                'event_location' => $event->location,
+                'event_image_url' => $event->getImageUrl(),
+                'activity_points' => $event->activity_points,
+                'union_id' => $event->union_id,
+                'union_name' => $event->union->name ?? null,
             ],
         ]);
     }
