@@ -3,6 +3,12 @@
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
 
+.fi-simple-page-content {
+    padding: 20px;
+    border: unset;
+    background: unset;
+}
+
 .fi-topbar {
     background: blue;
 }
@@ -28,50 +34,4 @@
 .fi-section-header-heading {
     font-size: 1.125rem !important;
     font-weight: 600 !important;
-}
-
-/* Custom Login Page Styles */
-.fi-login-page {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    position: relative;
-    padding-top: 4rem;
-}
-
-/* Logo container */
-.fi-login-page>div:first-child::before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 180px;
-    height: 180px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 10;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
-}
-
-.fi-login-page .fi-simple-main {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 1rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    margin-top: 10rem;
-    position: relative;
-    z-index: 2;
-}
-
-.fi-login-page .fi-header-heading {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #1f2937;
-}
-
-.fi-login-page .fi-header-subheading {
-    font-size: 1rem;
-    color: #6b7280;
-    margin-top: 0.5rem;
 }

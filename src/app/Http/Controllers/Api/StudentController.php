@@ -65,12 +65,12 @@ class StudentController extends Controller
     public function getEvents(Request $request): JsonResponse
     {
         $user = $request->user();
-        
-        $query = Event::with(['union', 'registrations' => function($q) use ($user) {
+
+        $query = Event::with(['union', 'registrations' => function ($q) use ($user) {
             $q->where('user_id', $user->id);
         }])
-        ->where('status', 'published')
-        ->orderBy('start_date', 'asc');
+            ->where('status', 'published')
+            ->orderBy('start_date', 'asc');
 
         // Filter by status
         if ($request->has('status')) {
@@ -80,7 +80,7 @@ class StudentController extends Controller
                     break;
                 case 'ongoing':
                     $query->where('start_date', '<=', now())
-                          ->where('end_date', '>=', now());
+                        ->where('end_date', '>=', now());
                     break;
                 case 'completed':
                     $query->where('end_date', '<', now());
@@ -170,12 +170,12 @@ class StudentController extends Controller
     public function getEvent(Request $request, $id): JsonResponse
     {
         $user = $request->user();
-        
-        $event = Event::with(['union', 'registrations' => function($q) use ($user) {
+
+        $event = Event::with(['union', 'registrations' => function ($q) use ($user) {
             $q->where('user_id', $user->id);
         }])
-        ->where('status', 'published')
-        ->find($id);
+            ->where('status', 'published')
+            ->find($id);
 
         if (!$event) {
             return response()->json([
@@ -186,7 +186,7 @@ class StudentController extends Controller
 
         $registration = $event->registrations->first();
         $attendance = null;
-        
+
         if ($registration && $registration->status === 'approved') {
             $attendance = EventAttendance::where('user_id', $user->id)
                 ->where('event_id', $event->id)
@@ -274,9 +274,9 @@ class StudentController extends Controller
     public function registerEvent(Request $request, $id): JsonResponse
     {
         $user = $request->user();
-        
+
         $event = Event::where('status', 'published')->find($id);
-        
+
         if (!$event) {
             return response()->json([
                 'success' => false,
@@ -370,9 +370,9 @@ class StudentController extends Controller
     public function unregisterEvent(Request $request, $id): JsonResponse
     {
         $user = $request->user();
-        
+
         $event = Event::find($id);
-        
+
         if (!$event) {
             return response()->json([
                 'success' => false,
@@ -441,7 +441,7 @@ class StudentController extends Controller
     public function getRegistrations(Request $request): JsonResponse
     {
         $user = $request->user();
-        
+
         $query = EventRegistration::with(['event.union'])
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc');
@@ -464,6 +464,7 @@ class StudentController extends Controller
                     'title' => $registration->event->title,
                     'start_date' => $registration->event->start_date,
                     'end_date' => $registration->event->end_date,
+                    'image_url' => $registration->event->getImageUrl(),
                     'location' => $registration->event->location,
                     'activity_points' => $registration->event->activity_points,
                     'union' => [
@@ -507,7 +508,7 @@ class StudentController extends Controller
     public function getAttendance(Request $request): JsonResponse
     {
         $user = $request->user();
-        
+
         $query = EventAttendance::with(['event.union'])
             ->where('user_id', $user->id)
             ->orderBy('attended_at', 'desc');
@@ -566,7 +567,7 @@ class StudentController extends Controller
     public function getStatistics(Request $request): JsonResponse
     {
         $user = $request->user();
-        
+
         // Registration statistics
         $totalRegistrations = EventRegistration::where('user_id', $user->id)->count();
         $approvedRegistrations = EventRegistration::where('user_id', $user->id)->where('status', 'approved')->count();
@@ -659,7 +660,7 @@ class StudentController extends Controller
     private function getEventStatus($event): string
     {
         $now = now();
-        
+
         if ($event->start_date > $now) {
             return 'upcoming';
         } elseif ($event->start_date <= $now && $event->end_date >= $now) {
@@ -671,7 +672,7 @@ class StudentController extends Controller
 
     private function getStatusLabel($status): string
     {
-        return match($status) {
+        return match ($status) {
             'pending' => 'Chờ duyệt',
             'approved' => 'Đã duyệt',
             'rejected' => 'Từ chối',
@@ -681,7 +682,7 @@ class StudentController extends Controller
 
     private function getAttendanceStatusLabel($status): string
     {
-        return match($status) {
+        return match ($status) {
             'present' => 'Có mặt',
             'absent' => 'Vắng mặt',
             'late' => 'Đi muộn',
